@@ -21,9 +21,10 @@ public class Database {
         this.connection = DriverManager.getConnection(information.getConnectionUrl(), information.getUsername(), information.getPassword());
     }
 
-    <T extends TableRow<T>> Table<T> registerTable(String name,Class<T> clazz){
+    public <T extends TableRow<T>> Table<T> registerTable(String name,Class<T> clazz){
         if(tables.containsKey(name))throw new IllegalStateException("A table with name '"+name+"' is already registered.");
         Table<T> table = new Table<>(this, name, clazz);
+        table.checkExistent();
         tables.put(name, table);
         return table;
     }
