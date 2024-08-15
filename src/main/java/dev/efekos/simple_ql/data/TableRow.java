@@ -15,7 +15,7 @@ public abstract class TableRow<T extends TableRow<T>> {
     private final List<String> dirtyFields = new ArrayList<>();
     private final Table<T> parentTable;
 
-    TableRow(Class<T> clazz, Table<T> parentTable) {
+    public TableRow(Class<T> clazz, Table<T> parentTable) {
         this.clazz = clazz;
         this.parentTable = parentTable;
     }
