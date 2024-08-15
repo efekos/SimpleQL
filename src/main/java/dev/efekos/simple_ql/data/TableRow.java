@@ -1,6 +1,12 @@
 package dev.efekos.simple_ql.data;
 
+import dev.efekos.simple_ql.annotation.Primary;
+import dev.efekos.simple_ql.exception.NoPrimaryKeyException;
+import dev.efekos.simple_ql.exception.NoSetterException;
+
 import java.lang.reflect.Field;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 public abstract class TableRow<T extends TableRow<T>> {
@@ -12,6 +18,22 @@ public abstract class TableRow<T extends TableRow<T>> {
     TableRow(Class<T> clazz, Table<T> parentTable) {
         this.clazz = clazz;
         this.parentTable = parentTable;
+    }
+
+    Field getPrimaryField(){
+        for (Field field : clazz.getDeclaredFields()) if(field.isAnnotationPresent(Primary.class))return field;
+        throw new NoPrimaryKeyException(clazz.getName()+" Does not have any fields annotated with "+Primary.class.getName());
+    }
+
+    void setField(Field field, PreparedStatement stmt,int index){
+        try {
+            Optional<SetterAction<Object>> setter = findSetter(field.getType());
+            if(setter.isEmpty()) throw new NoSetterException(field);
+            field.setAccessible(true);
+            setter.get().set(stmt,index,field.get(this));
+        } catch (IllegalAccessException e){
+            throw new IllegalStateException("Literally what the fuck. How did this even happen. I literally made it accessible the line before. What the fuck do you mean illegal access?",e);
+        } catch (SQLException ignored){}
     }
 
     Class<T> getClazz() {
