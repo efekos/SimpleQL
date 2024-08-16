@@ -1,8 +1,8 @@
 package dev.efekos.simple_ql.data;
 
 public enum DatabaseType {
-    MYSQL(true,"mysql"),
-    SQLITE(false,"sqlite");
+    MYSQL(true, "mysql"),
+    SQLITE(false, "sqlite");
 
     private final boolean createSchema;
     private final String name;

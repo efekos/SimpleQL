@@ -1,6 +1,5 @@
 package dev.efekos.simple_ql.data;
 
-import javax.xml.crypto.Data;
 import java.util.Objects;
 
 public class DatabaseInformation {
@@ -33,9 +32,9 @@ public class DatabaseInformation {
                 '}';
     }
 
-    public DatabaseType getType(){
+    public DatabaseType getType() {
         for (DatabaseType type : DatabaseType.values())
-            if(connectionUrl.startsWith("jdbc:"+type.getName()))return type;
+            if (connectionUrl.startsWith("jdbc:" + type.getName())) return type;
         return null;
     }
 
