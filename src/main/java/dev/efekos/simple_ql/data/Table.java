@@ -60,7 +60,7 @@ public class Table<T extends TableRow<T>> {
         if(type.isAssignableFrom(boolean.class)||type.isAssignableFrom(int.class)) return "INT";
         if(type.isAssignableFrom(double.class)||type.isAssignableFrom(float.class)) return "REAL";
         if(type.isAssignableFrom(UUID.class)) return "VARCHAR(36)";
-        if(type.isAssignableFrom(String.class)) return "TEXT";
+        if(type.isAssignableFrom(String.class)||TableRowTypeAdapter.class.isAssignableFrom(type)) return "TEXT";
         throw new IllegalStateException("Could not determine a column type for field "+field);
     }
 
@@ -203,7 +203,7 @@ public class Table<T extends TableRow<T>> {
         if(c==short.class||c==Short.class) return Optional.of((stmt, index, value) -> stmt.setShort(index,(short) value));
         if(c==byte.class||c==Byte.class) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
         if(c==long.class||c==Long.class) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
-        if(c.isAssignableFrom(TableRowTypeAdapter.class)) return Optional.of((stmt, index, value) -> {
+        if(TableRowTypeAdapter.class.isAssignableFrom(c)) return Optional.of((stmt, index, value) -> {
             TableRowTypeAdapter adapter = (TableRowTypeAdapter) value;
             stmt.setString(index,adapter.adapt());
         });
@@ -221,7 +221,7 @@ public class Table<T extends TableRow<T>> {
         if(c==short.class||c==Short.class) return Optional.of((s, columnName) -> (C)(Short)s.getShort(columnName));
         if(c==byte.class||c==Byte.class) return Optional.of((s, columnName) -> (C)(Byte)s.getByte(columnName));
         if(c==long.class||c==Long.class) return Optional.of((s, columnName) -> (C)(Long)s.getLong(columnName));
-        if(c.isAssignableFrom(TableRowTypeAdapter.class)) return Optional.of((s, columnName) -> {
+        if(TableRowTypeAdapter.class.isAssignableFrom(c)) return Optional.of((s, columnName) -> {
             try {
                 String string = s.getString(columnName);
                 Method method = c.getDeclaredMethod("readAdapted", String.class);
