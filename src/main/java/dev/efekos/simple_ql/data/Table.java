@@ -3,12 +3,15 @@ package dev.efekos.simple_ql.data;
 import dev.efekos.simple_ql.annotation.AutoIncrement;
 import dev.efekos.simple_ql.annotation.Primary;
 import dev.efekos.simple_ql.annotation.Type;
+import dev.efekos.simple_ql.exception.NoSetterException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Table<T extends TableRow<T>> {
 
@@ -24,7 +27,7 @@ public class Table<T extends TableRow<T>> {
 
     private String createGenerationCode(){
         StringBuilder builder = new StringBuilder();
-        builder.append("CREATE TABLE IF NOT EXISTS");
+        builder.append("CREATE TABLE IF NOT EXISTS ");
         builder.append(name);
         builder.append(" (");
         for (Field field : clazz.getDeclaredFields()) {
@@ -32,6 +35,7 @@ public class Table<T extends TableRow<T>> {
             boolean primary = field.isAnnotationPresent(Primary.class);
             boolean autoIncrement = field.isAnnotationPresent(AutoIncrement.class);
 
+            if(!builder.toString().endsWith("(")) builder.append(",");
             builder.append(columnName);
             builder.append(" ");
             builder.append(findType(field));
@@ -54,10 +58,10 @@ public class Table<T extends TableRow<T>> {
     void checkExistent(){
         try(PreparedStatement stmt = database.getConnection().prepareStatement(createGenerationCode())) {
             stmt.executeUpdate();
-        } catch (SQLException ignored){}
+        } catch (SQLException ignored){ignored.printStackTrace();}
     }
 
-    void clean(TableRow<T> row){
+    void clean(T row){
         if(!row.isDirty()) return;
 
         for (Field field : row.getClazz().getDeclaredFields()) {
@@ -71,6 +75,56 @@ public class Table<T extends TableRow<T>> {
                 stmt.executeUpdate();
             } catch (Exception ignored){}
         }
+    }
+
+    public T insertRow(Consumer<T> propertyChanger){
+        try {
+            Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
+            constructor.setAccessible(true);
+            T instance = constructor.newInstance(clazz, this);
+            propertyChanger.accept(instance);
+            try(PreparedStatement stmt = database.getConnection().prepareStatement(createInsertionCode())) {
+
+                Field[] fields = clazz.getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    Field field = fields[i];
+                    field.setAccessible(true);
+                    Object value = field.get(instance);
+                    Optional<SetterAction<Object>> setter = instance.findSetter(value.getClass());
+                    if(setter.isEmpty()) throw new NoSetterException(field);
+                    setter.get().set(stmt,i+1,value);
+                }
+
+                stmt.executeUpdate();
+                return instance;
+            } catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String createInsertionCode() {
+        StringBuilder mainBuilder = new StringBuilder();
+        mainBuilder.append("INSERT INTO ");
+        mainBuilder.append(name);
+        StringBuilder nameBuilder = new StringBuilder().append("(");
+        StringBuilder valueBuilder = new StringBuilder().append("(");
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if(!nameBuilder.toString().endsWith("(")) nameBuilder.append(", ");
+            nameBuilder.append(field.getName());
+
+            if(!valueBuilder.toString().endsWith("(")) valueBuilder.append(", ");
+            valueBuilder.append("?");
+        }
+        nameBuilder.append(")");
+        valueBuilder.append(")");
+        String s = mainBuilder.append(" ").append(nameBuilder).append(" VALUES ").append(valueBuilder).toString();
+        return s;
     }
 
 }
