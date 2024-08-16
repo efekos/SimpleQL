@@ -133,8 +133,7 @@ public class Table<T extends TableRow<T>> {
         }
         nameBuilder.append(")");
         valueBuilder.append(")");
-        String s = mainBuilder.append(" ").append(nameBuilder).append(" VALUES ").append(valueBuilder).toString();
-        return s;
+        return mainBuilder.append(" ").append(nameBuilder).append(" VALUES ").append(valueBuilder).toString();
     }
 
     public Optional<T> getRow(Object key) {
@@ -239,4 +238,14 @@ public class Table<T extends TableRow<T>> {
         return Optional.empty();
     }
 
+    void delete(T row) {
+        try(PreparedStatement stmt = database.getConnection().prepareStatement("DELETE FROM "+name+" WHERE "+primaryKey.getName()+"= ?;")) {
+            Optional<SetterAction<Object>> setter = findSetter(primaryKey.getType());
+            if(setter.isEmpty()) throw new NoSetterException(primaryKey);
+            primaryKey.setAccessible(true);
+            setter.get().set(stmt,1,primaryKey.get(row));
+            stmt.executeUpdate();
+        } catch (SQLException e){e.printStackTrace();}
+        catch (IllegalAccessException ignored) {  }
+    }
 }

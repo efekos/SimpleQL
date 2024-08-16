@@ -34,6 +34,9 @@ public class SimpleQLTesting {
         customer.setMoney(money);
         customer.clean();
 
+        // Data deleting.
+        customer.delete();
+
         // Database disconnection.
         database.disconnect();
     }

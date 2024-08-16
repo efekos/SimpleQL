@@ -14,6 +14,7 @@ public abstract class TableRow<T extends TableRow<T>> {
     private final Class<T> clazz;
     private final List<String> dirtyFields = new ArrayList<>();
     private final Table<T> parentTable;
+    private boolean deleted;
 
     public TableRow(Class<T> clazz, Table<T> parentTable) {
         this.clazz = clazz;
@@ -46,6 +47,7 @@ public abstract class TableRow<T extends TableRow<T>> {
         dirtyFields.add(name);
     }
 
+    @SuppressWarnings("unchecked")
     public void clean(){
         parentTable.clean((T)this);
         dirtyFields.clear();
@@ -55,6 +57,11 @@ public abstract class TableRow<T extends TableRow<T>> {
         dirtyFields.clear();
     }
 
-
+    @SuppressWarnings("unchecked")
+    public void delete(){
+        if(deleted) throw new IllegalStateException("This row is already deleted.");
+        parentTable.delete((T)this);
+        deleted = true;
+    }
 
 }
