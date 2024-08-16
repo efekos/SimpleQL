@@ -1,5 +1,6 @@
 package dev.efekos.simple_ql.data;
 
+import javax.xml.crypto.Data;
 import java.util.Objects;
 
 public class DatabaseInformation {
@@ -7,6 +8,14 @@ public class DatabaseInformation {
     private String connectionUrl;
     private String username;
     private String password;
+    private String databaseName = "simple_ql";
+
+    public DatabaseInformation(String connectionUrl, String username, String password, String databaseName) {
+        this.connectionUrl = connectionUrl;
+        this.username = username;
+        this.password = password;
+        this.databaseName = databaseName;
+    }
 
     public DatabaseInformation(String connectionUrl, String username, String password) {
         this.connectionUrl = connectionUrl;
@@ -20,7 +29,14 @@ public class DatabaseInformation {
                 "connectionUrl='" + connectionUrl + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", databaseName='" + databaseName + '\'' +
                 '}';
+    }
+
+    public DatabaseType getType(){
+        for (DatabaseType type : DatabaseType.values())
+            if(connectionUrl.startsWith("jdbc:"+type.getName()))return type;
+        return null;
     }
 
     @Override
@@ -28,12 +44,12 @@ public class DatabaseInformation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DatabaseInformation that = (DatabaseInformation) o;
-        return Objects.equals(getConnectionUrl(), that.getConnectionUrl()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getPassword(), that.getPassword());
+        return Objects.equals(getConnectionUrl(), that.getConnectionUrl()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(databaseName, that.databaseName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getConnectionUrl(), getUsername(), getPassword());
+        return Objects.hash(getConnectionUrl(), getUsername(), getPassword(), databaseName);
     }
 
     public String getConnectionUrl() {
@@ -58,5 +74,13 @@ public class DatabaseInformation {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 }
