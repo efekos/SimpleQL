@@ -21,8 +21,18 @@ public final class SimpleQL {
         return createDatabase(new DatabaseInformation(url, user, password));
     }
 
+
+    public static Database createDatabase(String url, String databaseName, String user, String password){
+        return createDatabase(new DatabaseInformation(url, user, password,databaseName));
+    }
+
     public static Database createDatabase(String url){
         return createDatabase(new DatabaseInformation(url,null,null));
+    }
+
+
+    public static Database createDatabase(String url,String databaseName){
+        return createDatabase(new DatabaseInformation(url,null,null, databaseName));
     }
 
 }
