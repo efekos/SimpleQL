@@ -60,7 +60,7 @@ public class Table<T extends TableRow<T>> {
         if(type.isAssignableFrom(boolean.class)||type.isAssignableFrom(int.class)) return "INT";
         if(type.isAssignableFrom(double.class)||type.isAssignableFrom(float.class)) return "REAL";
         if(type.isAssignableFrom(UUID.class)) return "VARCHAR(36)";
-        if(type.isAssignableFrom(String.class)||TableRowTypeAdapter.class.isAssignableFrom(type)) return "TEXT";
+        if(type.isAssignableFrom(String.class)||TableRowTypeAdapter.class.isAssignableFrom(type)||type.isEnum()) return "TEXT";
         throw new IllegalStateException("Could not determine a column type for field "+field);
     }
 
@@ -206,6 +206,7 @@ public class Table<T extends TableRow<T>> {
             TableRowTypeAdapter adapter = (TableRowTypeAdapter) value;
             stmt.setString(index,adapter.adapt());
         });
+        if(c.isEnum()) return Optional.of((stmt, index, value) -> stmt.setString(index,value.toString()));
         return Optional.empty();
     }
 
@@ -234,6 +235,12 @@ public class Table<T extends TableRow<T>> {
             } catch (InvocationTargetException e) { throw new RuntimeException(e); }
             catch (IllegalAccessException ignored) { /*literally what the fuck this is impossible*/ }
             return null;
+        });
+        if(c.isEnum()) return Optional.of((s, columnName) -> {
+            try {
+                Field field = c.getField(s.getString(columnName));
+                return (C) field.get(null);
+            } catch (Exception e){e.printStackTrace(); return null;}
         });
         return Optional.empty();
     }

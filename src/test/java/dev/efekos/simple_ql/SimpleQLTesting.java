@@ -22,6 +22,7 @@ public class SimpleQLTesting {
             c.setId(id);
             c.setName("John Doe");
             c.setMoney(new CustomerMoney(50,0));
+            c.setGender(CustomerGender.FEMALE);
         });
 
         Optional<Customer> row = customers.getRow(id);
@@ -32,6 +33,7 @@ public class SimpleQLTesting {
         CustomerMoney money = customer.getMoney();
         money.setCents(10);
         customer.setMoney(money);
+        customer.setGender(CustomerGender.MALE);
         customer.clean();
 
         // Data deleting.

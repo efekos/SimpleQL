@@ -16,6 +16,8 @@ public class Customer extends TableRow<Customer> {
 
     private CustomerMoney money;
 
+    private CustomerGender gender;
+
     public Customer(Class<Customer> clazz, Table<Customer> parentTable) {
         super(clazz,parentTable);
     }
@@ -47,11 +49,22 @@ public class Customer extends TableRow<Customer> {
         super.markDirty("money");
     }
 
+    public CustomerGender getGender() {
+        return gender;
+    }
+
+    public void setGender(CustomerGender gender) {
+        this.gender = gender;
+        markDirty("gender");
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", money=" + money +
+                ", gender=" + gender +
                 '}';
     }
 }
