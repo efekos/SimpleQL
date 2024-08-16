@@ -3,11 +3,12 @@ package dev.efekos.simple_ql.data;
 import dev.efekos.simple_ql.annotation.AutoIncrement;
 import dev.efekos.simple_ql.annotation.Primary;
 import dev.efekos.simple_ql.annotation.Type;
+import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,11 +19,19 @@ public class Table<T extends TableRow<T>> {
     private final Database database;
     private final String name;
     private final Class<T> clazz;
+    private Field primaryKey = null;
 
     Table(Database database,String name,Class<T> clazz) {
         this.database = database;
         this.name = name;
         this.clazz = clazz;
+
+        for (Field field : clazz.getDeclaredFields())
+            if (field.isAnnotationPresent(Primary.class)) {
+                primaryKey = field;
+                break;
+            }
+        if(primaryKey==null) throw new IllegalArgumentException("At least one primary key is required for "+clazz.getName());
     }
 
     private String createGenerationCode(){
@@ -52,13 +61,13 @@ public class Table<T extends TableRow<T>> {
         if(type.isAssignableFrom(double.class)||type.isAssignableFrom(float.class)) return "REAL";
         if(type.isAssignableFrom(UUID.class)) return "VARCHAR(36)";
         if(type.isAssignableFrom(String.class)) return "TEXT";
-        throw new IllegalStateException("Could determine a column type for field "+field);
+        throw new IllegalStateException("Could not determine a column type for field "+field);
     }
 
     void checkExistent(){
         try(PreparedStatement stmt = database.getConnection().prepareStatement(createGenerationCode())) {
             stmt.executeUpdate();
-        } catch (SQLException ignored){ignored.printStackTrace();}
+        } catch (SQLException e){e.printStackTrace();}
     }
 
     void clean(T row){
@@ -68,10 +77,10 @@ public class Table<T extends TableRow<T>> {
             if(!row.isDirty(field.getName()))continue;
             field.setAccessible(true);
             row.getPrimaryField().setAccessible(true);
-            try(PreparedStatement stmt = database.getConnection().prepareStatement("UPDATE "+name+" SET "+field.getName()+"=? WHERE "+field.getName()+"=?")) {
-                Optional<SetterAction<Object>> setter = row.findSetter(field.getType());
+            try(PreparedStatement stmt = database.getConnection().prepareStatement("UPDATE "+name+" SET "+field.getName()+"=? WHERE "+primaryKey.getName()+"=?")) {
+                Optional<SetterAction<Object>> setter = findSetter(field.getType());
                 if(setter.isPresent()) setter.get().set(stmt,1,field.get(row));
-                row.setField(row.getPrimaryField(),stmt,2);
+                setField(row,row.getPrimaryField(),stmt,2);
                 stmt.executeUpdate();
             } catch (Exception ignored){}
         }
@@ -83,6 +92,7 @@ public class Table<T extends TableRow<T>> {
             constructor.setAccessible(true);
             T instance = constructor.newInstance(clazz, this);
             propertyChanger.accept(instance);
+            instance.cleanWithoutUpdate();
             try(PreparedStatement stmt = database.getConnection().prepareStatement(createInsertionCode())) {
 
                 Field[] fields = clazz.getDeclaredFields();
@@ -90,7 +100,7 @@ public class Table<T extends TableRow<T>> {
                     Field field = fields[i];
                     field.setAccessible(true);
                     Object value = field.get(instance);
-                    Optional<SetterAction<Object>> setter = instance.findSetter(value.getClass());
+                    Optional<SetterAction<Object>> setter = findSetter(value.getClass());
                     if(setter.isEmpty()) throw new NoSetterException(field);
                     setter.get().set(stmt,i+1,value);
                 }
@@ -125,6 +135,108 @@ public class Table<T extends TableRow<T>> {
         valueBuilder.append(")");
         String s = mainBuilder.append(" ").append(nameBuilder).append(" VALUES ").append(valueBuilder).toString();
         return s;
+    }
+
+    public Optional<T> getRow(Object key) {
+        if (!primaryKey.getType().equals(key.getClass()))
+            throw new IllegalStateException("Primary key of " + clazz.getName() + " is " + primaryKey.getType().getName() + ", not " + key.getClass().getName());
+        try (PreparedStatement stmt = database.getConnection().prepareStatement(generateQueryCode())) {
+            Optional<SetterAction<Object>> setter = findSetter(primaryKey.getType());
+            if(setter.isEmpty()) throw new NoSetterException(primaryKey);
+            setter.get().set(stmt,1,key);
+            ResultSet set = stmt.executeQuery();
+            T i = null;
+
+            while (set.next()&&i==null) {
+                Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
+                constructor.setAccessible(true);
+                T instance = constructor.newInstance(clazz, this);
+
+                // get all columns from set and assign them to instance fields
+                for (Field field : clazz.getDeclaredFields()) {
+                    field.setAccessible(true);
+                    Optional<? extends GetterAction<?>> getterOptional = findGetter(field.getType());
+                    if(getterOptional.isEmpty()) throw new NoGetterException(field);
+                    Object o = getterOptional.get().get(set, field.getName());
+                    field.set(instance,o);
+                }
+
+                i = instance;
+            }
+
+            return Optional.ofNullable(i);
+        }
+        catch (SQLException e) { e.printStackTrace(); return Optional.empty(); }
+        catch (NoSuchMethodException e) { throw new IllegalStateException(clazz.getName()+" must have constructor "+clazz.getSimpleName()+"(Class,Table)"); }
+        catch (InstantiationException e) { throw new IllegalStateException(clazz.getName()+" cannot be instantiated because it is abstract"); }
+        catch (InvocationTargetException e){ throw new RuntimeException(e); }
+        catch (IllegalAccessException ignored) { return Optional.empty(); }
+    }
+
+    private String generateQueryCode() {
+        return "SELECT * FROM " +
+                name +
+                " WHERE " +
+                primaryKey.getName() +
+                " = ?;";
+    }
+
+
+    void setField(T row,Field field, PreparedStatement stmt,int index){
+        try {
+            Optional<SetterAction<Object>> setter = findSetter(field.getType());
+            if(setter.isEmpty()) throw new NoSetterException(field);
+            field.setAccessible(true);
+            setter.get().set(stmt,index,field.get(row));
+        } catch (IllegalAccessException e){
+            throw new IllegalStateException("Literally what the fuck. How did this even happen. I literally made it accessible the line before. What the fuck do you mean illegal access?",e);
+        } catch (SQLException ignored){}
+    }
+
+
+    Optional<SetterAction<Object>> findSetter(Class<?> c){
+        if(c==String.class) return Optional.of((stmt, index, value) -> stmt.setString(index,(String) value));
+        if(c==UUID.class) return Optional.of((stmt, index, value) -> stmt.setString(index, value.toString()));
+        if(c==int.class||c==Integer.class) return Optional.of((stmt, index, value) -> stmt.setInt(index,(int) value));
+        if(c==double.class||c==Double.class) return Optional.of((stmt, index, value) -> stmt.setDouble(index,(double) value));
+        if(c==float.class||c==Float.class) return Optional.of((stmt, index, value) -> stmt.setFloat(index,(float) value));
+        if(c==short.class||c==Short.class) return Optional.of((stmt, index, value) -> stmt.setShort(index,(short) value));
+        if(c==byte.class||c==Byte.class) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
+        if(c==long.class||c==Long.class) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
+        if(c.isAssignableFrom(TableRowTypeAdapter.class)) return Optional.of((stmt, index, value) -> {
+            TableRowTypeAdapter adapter = (TableRowTypeAdapter) value;
+            stmt.setString(index,adapter.adapt());
+        });
+        return Optional.empty();
+    }
+
+
+    @SuppressWarnings("unchecked")
+    <C> Optional<GetterAction<C>> findGetter(Class<C> c){
+        if(c==String.class) return Optional.of((s, columnName) -> (C)s.getString(columnName));
+        if(c==UUID.class) return Optional.of((s, columnName) -> (C)UUID.fromString(s.getString(columnName)));
+        if(c==int.class||c==Integer.class) return Optional.of((s, columnName) -> (C)(Integer)s.getInt(columnName));
+        if(c==double.class||c==Double.class) return Optional.of((s, columnName) -> (C)(Double)s.getDouble(columnName));
+        if(c==float.class||c==Float.class) return Optional.of((s, columnName) -> (C)(Float)s.getFloat(columnName));
+        if(c==short.class||c==Short.class) return Optional.of((s, columnName) -> (C)(Short)s.getShort(columnName));
+        if(c==byte.class||c==Byte.class) return Optional.of((s, columnName) -> (C)(Byte)s.getByte(columnName));
+        if(c==long.class||c==Long.class) return Optional.of((s, columnName) -> (C)(Long)s.getLong(columnName));
+        if(c.isAssignableFrom(TableRowTypeAdapter.class)) return Optional.of((s, columnName) -> {
+            try {
+                String string = s.getString(columnName);
+                Method method = c.getDeclaredMethod("readAdapted", String.class);
+                if(!Modifier.isStatic(method.getModifiers()))throw new IllegalStateException("");
+                method.setAccessible(true);
+                Object value = method.invoke(null, string);
+                if(value==null) return null;
+                else return (C)value;
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(c.getName()+" must have a static method readAdapted(String) that returns "+c.getName());
+            } catch (InvocationTargetException e) { throw new RuntimeException(e); }
+            catch (IllegalAccessException ignored) { /*literally what the fuck this is impossible*/ }
+            return null;
+        });
+        return Optional.empty();
     }
 
 }

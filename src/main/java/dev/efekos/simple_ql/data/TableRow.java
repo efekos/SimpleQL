@@ -25,16 +25,6 @@ public abstract class TableRow<T extends TableRow<T>> {
         throw new NoPrimaryKeyException(clazz.getName()+" Does not have any fields annotated with "+Primary.class.getName());
     }
 
-    void setField(Field field, PreparedStatement stmt,int index){
-        try {
-            Optional<SetterAction<Object>> setter = findSetter(field.getType());
-            if(setter.isEmpty()) throw new NoSetterException(field);
-            field.setAccessible(true);
-            setter.get().set(stmt,index,field.get(this));
-        } catch (IllegalAccessException e){
-            throw new IllegalStateException("Literally what the fuck. How did this even happen. I literally made it accessible the line before. What the fuck do you mean illegal access?",e);
-        } catch (SQLException ignored){}
-    }
 
     Class<T> getClazz() {
         return clazz;
@@ -52,30 +42,19 @@ public abstract class TableRow<T extends TableRow<T>> {
         for (Field field : clazz.getDeclaredFields()) markDirty(field.getName());
     }
 
-    private void markDirty(String name) {
+    protected void markDirty(String name) {
         dirtyFields.add(name);
     }
 
-    void clean(){
-        parentTable.clean(this);
+    public void clean(){
+        parentTable.clean((T)this);
         dirtyFields.clear();
     }
 
-    <TY> Optional<SetterAction<TY>> findSetter(Class<?> c){
-        if(c.isAssignableFrom(String.class)) return Optional.of((stmt, index, value) -> stmt.setString(index,(String) value));
-        if(c.isAssignableFrom(UUID.class)) return Optional.of((stmt, index, value) -> stmt.setString(index, value.toString()));
-        if(c.isAssignableFrom(int.class)||c.isAssignableFrom(Integer.class)) return Optional.of((stmt, index, value) -> stmt.setInt(index,(int) value));
-        if(c.isAssignableFrom(double.class)||c.isAssignableFrom(Double.class)) return Optional.of((stmt, index, value) -> stmt.setDouble(index,(double) value));
-        if(c.isAssignableFrom(float.class)||c.isAssignableFrom(Float.class)) return Optional.of((stmt, index, value) -> stmt.setFloat(index,(float) value));
-        if(c.isAssignableFrom(short.class)||c.isAssignableFrom(Short.class)) return Optional.of((stmt, index, value) -> stmt.setShort(index,(short) value));
-        if(c.isAssignableFrom(byte.class)||c.isAssignableFrom(Byte.class)) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
-        if(c.isAssignableFrom(long.class)||c.isAssignableFrom(Long.class)) return Optional.of((stmt, index, value) -> stmt.setByte(index,(byte) value));
-        if(c.isAssignableFrom(TableRowTypeAdapter.class)) return Optional.of((stmt, index, value) -> {
-            TableRowTypeAdapter adapter = (TableRowTypeAdapter) value;
-            stmt.setString(index,adapter.adapt());
-        });
-        return Optional.empty();
+    void cleanWithoutUpdate(){
+        dirtyFields.clear();
     }
+
 
 
 }
