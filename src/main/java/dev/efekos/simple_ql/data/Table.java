@@ -5,6 +5,7 @@ import dev.efekos.simple_ql.annotation.Primary;
 import dev.efekos.simple_ql.annotation.Type;
 import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
+import dev.efekos.simple_ql.exception.TableException;
 
 import java.lang.reflect.*;
 import java.sql.PreparedStatement;
@@ -70,7 +71,7 @@ public class Table<T extends TableRow<T>> {
         try (PreparedStatement stmt = database.getConnection().prepareStatement(createGenerationCode())) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new TableException("Could not create table '" + name + "': "+e.getMessage());
         }
     }
 
