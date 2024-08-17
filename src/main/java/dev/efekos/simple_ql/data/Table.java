@@ -3,6 +3,7 @@ package dev.efekos.simple_ql.data;
 import dev.efekos.simple_ql.annotation.AutoIncrement;
 import dev.efekos.simple_ql.annotation.Primary;
 import dev.efekos.simple_ql.annotation.Type;
+import dev.efekos.simple_ql.annotation.Unique;
 import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
 import dev.efekos.simple_ql.exception.TableException;
@@ -44,13 +45,15 @@ public class Table<T extends TableRow<T>> {
         for (Field field : clazz.getDeclaredFields()) {
             String columnName = field.getName();
             boolean primary = field.isAnnotationPresent(Primary.class);
+            boolean unique = field.isAnnotationPresent(Unique.class);
             boolean autoIncrement = field.isAnnotationPresent(AutoIncrement.class);
 
             if (!builder.toString().endsWith("(")) builder.append(",");
             builder.append(columnName);
             builder.append(" ");
             builder.append(findType(field));
-            if (primary) builder.append(" PRIMARY KEY UNIQUE");
+            if (primary) builder.append(" PRIMARY KEY");
+            if(primary||unique) builder.append(" UNIQUE");
             if (autoIncrement) builder.append(" AUTO_INCREMENT");
         }
         return builder.append(")").toString();
@@ -104,6 +107,7 @@ public class Table<T extends TableRow<T>> {
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
                     Field field = fields[i];
+                    if(field.isAnnotationPresent(AutoIncrement.class))continue;
                     field.setAccessible(true);
                     Object value = field.get(instance);
                     Optional<SetterAction<Object>> setter = findSetter(value.getClass());
@@ -131,6 +135,7 @@ public class Table<T extends TableRow<T>> {
         StringBuilder valueBuilder = new StringBuilder().append("(");
 
         for (Field field : clazz.getDeclaredFields()) {
+            if(field.isAnnotationPresent(AutoIncrement.class))continue;
             if (!nameBuilder.toString().endsWith("(")) nameBuilder.append(", ");
             nameBuilder.append(field.getName());
 
