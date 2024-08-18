@@ -2,7 +2,11 @@ package dev.efekos.simple_ql;
 
 import dev.efekos.simple_ql.data.Database;
 import dev.efekos.simple_ql.data.Table;
+import dev.efekos.simple_ql.query.Conditions;
+import dev.efekos.simple_ql.query.QueryBuilder;
+import dev.efekos.simple_ql.query.QueryResult;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,8 +29,24 @@ public class SimpleQLTesting {
             c.setGender(CustomerGender.FEMALE);
         });
 
+        // Data querying.
         Optional<Customer> row = customers.getRow(id);
         row.ifPresent(System.out::println);
+
+        QueryResult<Customer> result = customers.query(new QueryBuilder()
+                .filterWithCondition(Conditions.lessThan("age", 18))
+                .sortAscending("age")
+                .skip(5)
+                .limit(10)
+                .getQuery()
+        );
+
+        if(result.hasException())System.out.println("Could not query minor customers: "+result.exception().getMessage());
+        else {
+            List<Customer> minorCustomers = result.result();
+            System.out.println("Minor customers:");
+            minorCustomers.forEach(System.out::println);
+        }
 
         // Data updating.
         customer.setName("John Boe");
