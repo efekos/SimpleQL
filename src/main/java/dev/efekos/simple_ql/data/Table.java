@@ -7,11 +7,14 @@ import dev.efekos.simple_ql.annotation.Unique;
 import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
 import dev.efekos.simple_ql.exception.TableException;
+import dev.efekos.simple_ql.query.Query;
+import dev.efekos.simple_ql.query.QueryResult;
 
 import java.lang.reflect.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -157,22 +160,8 @@ public class Table<T extends TableRow<T>> {
             ResultSet set = stmt.executeQuery();
             T i = null;
 
-            while (set.next() && i == null) {
-                Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
-                constructor.setAccessible(true);
-                T instance = constructor.newInstance(clazz, this);
+            while (set.next() && i == null) i = getFromRow(set);
 
-                // get all columns from set and assign them to instance fields
-                for (Field field : clazz.getDeclaredFields()) {
-                    field.setAccessible(true);
-                    Optional<? extends GetterAction<?>> getterOptional = findGetter(field.getType());
-                    if (getterOptional.isEmpty()) throw new NoGetterException(field);
-                    Object o = getterOptional.get().get(set, field.getName());
-                    field.set(instance, o);
-                }
-
-                i = instance;
-            }
 
             return Optional.ofNullable(i);
         } catch (SQLException e) {
@@ -187,6 +176,25 @@ public class Table<T extends TableRow<T>> {
         } catch (IllegalAccessException ignored) {
             return Optional.empty();
         }
+    }
+
+    private T getFromRow(ResultSet set) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, SQLException {
+        T i;
+        Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
+        constructor.setAccessible(true);
+        T instance = constructor.newInstance(clazz, this);
+
+        // get all columns from set and assign them to instance fields
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            Optional<? extends GetterAction<?>> getterOptional = findGetter(field.getType());
+            if (getterOptional.isEmpty()) throw new NoGetterException(field);
+            Object o = getterOptional.get().get(set, field.getName());
+            field.set(instance, o);
+        }
+
+        i = instance;
+        return i;
     }
 
     private String generateQueryCode() {
@@ -289,4 +297,25 @@ public class Table<T extends TableRow<T>> {
         } catch (IllegalAccessException ignored) {
         }
     }
+
+    public QueryResult<T> query(Query query) {
+        try(PreparedStatement stmt = database.getConnection().prepareStatement(query.toSqlCode(name))) {
+            ResultSet set = stmt.executeQuery();
+            ArrayList<T> ts = new ArrayList<>();
+
+            while (set.next()) ts.add(getFromRow(set));
+            return new QueryResult<>(null,ts);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(clazz.getName() + " must have constructor " + clazz.getSimpleName() + "(Class,Table)");
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(clazz.getName() + " cannot be instantiated because it is abstract");
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            return new QueryResult<>(e,null);
+        } catch (IllegalAccessException ignored) {
+            return new QueryResult<>(null,null);
+        }
+    }
+
 }
