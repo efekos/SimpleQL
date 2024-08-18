@@ -4,8 +4,8 @@ public class QueryBuilder {
 
     private final Query query;
 
-    public QueryBuilder(String tableName) {
-        this.query = new Query(tableName);
+    public QueryBuilder() {
+        this.query = new Query();
     }
 
     public QueryBuilder sortAscending(String fieldName){

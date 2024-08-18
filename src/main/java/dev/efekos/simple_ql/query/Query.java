@@ -7,26 +7,24 @@ public class Query {
 
     private List<Sort> sorts = new ArrayList<>();
     private List<Condition> conditions = new ArrayList<>();
-    private String tableName;
-    private Integer limit;
-    private int skip;
+    private int limit = 0;
+    private int skip = 0;
 
-    public Integer getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public void setLimit(Integer limit) {
+    public void setLimit(int limit) {
+        if(limit <= 0) throw new IllegalArgumentException("Limit must be greater than 0");
         this.limit = limit;
     }
 
-    public Query(List<Sort> sorts, List<Condition> conditions, String tableName) {
+    public Query(List<Sort> sorts, List<Condition> conditions) {
         this.sorts = sorts;
         this.conditions = conditions;
-        this.tableName = tableName;
     }
 
-    public Query(String tableName) {
-        this.tableName = tableName;
+    public Query() {
     }
 
     public void addSort(Sort sort){
@@ -45,14 +43,6 @@ public class Query {
         return conditions;
     }
 
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
-
     public void setSkip(int skip) {
         this.skip = skip;
     }
@@ -60,4 +50,40 @@ public class Query {
     public int getSkip() {
         return skip;
     }
+
+    public String toSqlCode(String tableName){
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("SELECT * FROM ");
+        builder.append(tableName);
+
+        if(!conditions.isEmpty()) builder.append(" WHERE ");
+        for (int i = 0; i < getConditions().size(); i++) {
+            Condition condition = getConditions().get(i);
+            if(i!=0) builder.append(" AND ");
+            builder.append("(");
+            builder.append(condition.toSqlCode());
+            builder.append(")");
+        }
+
+        for (Sort sort : getSorts()) {
+            builder.append(" ORDER BY ");
+            builder.append(sort.fieldName());
+            if(sort.ascending()) builder.append(" ASC");
+            else builder.append(" DESC");
+        }
+
+
+        if(limit!=0) {
+            builder.append(" LIMIT ");
+            builder.append(limit);
+        }
+        if(skip!=0) {
+            builder.append(" OFFSET ");
+            builder.append(skip);
+        }
+        builder.append(";");
+        return builder.toString();
+    }
+
 }
