@@ -6,7 +6,7 @@
 
     <groupId>dev.efekos</groupId>
     <artifactId>SimpleQL</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <properties>
         <java_version>17</java_version>
@@ -57,6 +57,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.45.2.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.12</version>
         </dependency>
     </dependencies>
 
