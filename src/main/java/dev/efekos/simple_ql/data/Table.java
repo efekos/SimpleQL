@@ -9,6 +9,7 @@ import dev.efekos.simple_ql.exception.NoSetterException;
 import dev.efekos.simple_ql.exception.TableException;
 import dev.efekos.simple_ql.query.Query;
 import dev.efekos.simple_ql.query.QueryResult;
+import dev.efekos.simple_ql.thread.UpdateActionThread;
 
 import java.lang.reflect.*;
 import java.sql.PreparedStatement;
@@ -56,7 +57,7 @@ public class Table<T extends TableRow<T>> {
             builder.append(" ");
             builder.append(findType(field));
             if (primary) builder.append(" PRIMARY KEY");
-            if(primary||unique) builder.append(" UNIQUE");
+            if (primary || unique) builder.append(" UNIQUE");
             if (autoIncrement) builder.append(" AUTO_INCREMENT");
         }
         return builder.append(")").toString();
@@ -77,7 +78,7 @@ public class Table<T extends TableRow<T>> {
         try (PreparedStatement stmt = database.getConnection().prepareStatement(createGenerationCode())) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new TableException("Could not create table '" + name + "': "+e.getMessage());
+            throw new TableException("Could not create table '" + name + "': " + e.getMessage());
         }
     }
 
@@ -88,13 +89,13 @@ public class Table<T extends TableRow<T>> {
             if (!row.isDirty(field.getName())) continue;
             field.setAccessible(true);
             row.getPrimaryField().setAccessible(true);
-            try (PreparedStatement stmt = database.getConnection().prepareStatement("UPDATE " + name + " SET " + field.getName() + "=? WHERE " + primaryKey.getName() + "=?")) {
-                Optional<SetterAction<Object>> setter = findSetter(field.getType());
+            Optional<SetterAction<Object>> setter = findSetter(field.getType());
+            new UpdateActionThread(database.getConnection(),"UPDATE" + name + " SET " + field.getName()+ "=? WHERE" + primaryKey.getName() + "=?;",stmt -> {
                 if (setter.isPresent()) setter.get().set(stmt, 1, field.get(row));
                 setField(row, row.getPrimaryField(), stmt, 2);
-                stmt.executeUpdate();
-            } catch (Exception ignored) {
-            }
+                return stmt;
+            }).start();
+
         }
     }
 
@@ -110,7 +111,7 @@ public class Table<T extends TableRow<T>> {
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
                     Field field = fields[i];
-                    if(field.isAnnotationPresent(AutoIncrement.class))continue;
+                    if (field.isAnnotationPresent(AutoIncrement.class)) continue;
                     field.setAccessible(true);
                     Object value = field.get(instance);
                     Optional<SetterAction<Object>> setter = findSetter(value.getClass());
@@ -138,7 +139,7 @@ public class Table<T extends TableRow<T>> {
         StringBuilder valueBuilder = new StringBuilder().append("(");
 
         for (Field field : clazz.getDeclaredFields()) {
-            if(field.isAnnotationPresent(AutoIncrement.class))continue;
+            if (field.isAnnotationPresent(AutoIncrement.class)) continue;
             if (!nameBuilder.toString().endsWith("(")) nameBuilder.append(", ");
             nameBuilder.append(field.getName());
 
@@ -286,25 +287,26 @@ public class Table<T extends TableRow<T>> {
     }
 
     void delete(T row) {
-        try (PreparedStatement stmt = database.getConnection().prepareStatement("DELETE FROM " + name + " WHERE " + primaryKey.getName() + "= ?;")) {
-            Optional<SetterAction<Object>> setter = findSetter(primaryKey.getType());
-            if (setter.isEmpty()) throw new NoSetterException(primaryKey);
-            primaryKey.setAccessible(true);
-            setter.get().set(stmt, 1, primaryKey.get(row));
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException ignored) {
-        }
+        Optional<SetterAction<Object>> setter = findSetter(primaryKey.getType());
+        if (setter.isEmpty()) throw new NoSetterException(primaryKey);
+
+        primaryKey.setAccessible(true);
+        new UpdateActionThread(database.getConnection(), "DELETE FROM " + name + " WHERE " + primaryKey.getName() + "= ?;", stmt -> {
+            try {
+                setter.get().set(stmt, 1, primaryKey.get(row));
+            } catch (Exception ignored) {
+            }
+            return stmt;
+        }).start();
     }
 
     public QueryResult<T> query(Query query) {
-        try(PreparedStatement stmt = database.getConnection().prepareStatement(query.toSqlCode(name))) {
+        try (PreparedStatement stmt = database.getConnection().prepareStatement(query.toSqlCode(name))) {
             ResultSet set = stmt.executeQuery();
             ArrayList<T> ts = new ArrayList<>();
 
             while (set.next()) ts.add(getFromRow(set));
-            return new QueryResult<>(null,ts);
+            return new QueryResult<>(null, ts);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException(clazz.getName() + " must have constructor " + clazz.getSimpleName() + "(Class,Table)");
         } catch (InstantiationException e) {
@@ -312,9 +314,9 @@ public class Table<T extends TableRow<T>> {
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
-            return new QueryResult<>(e,null);
+            return new QueryResult<>(e, null);
         } catch (IllegalAccessException ignored) {
-            return new QueryResult<>(null,null);
+            return new QueryResult<>(null, null);
         }
     }
 
