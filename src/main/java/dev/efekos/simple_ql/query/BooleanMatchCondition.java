@@ -12,7 +12,7 @@ public class BooleanMatchCondition implements Condition {
 
     @Override
     public String toSqlCode() {
-        return fieldName + " = " + (value?'1':'0');
+        return fieldName + " = " + (value ? '1' : '0');
     }
 
 }

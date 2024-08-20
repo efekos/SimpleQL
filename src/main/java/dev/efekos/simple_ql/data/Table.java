@@ -90,7 +90,7 @@ public class Table<T extends TableRow<T>> {
             field.setAccessible(true);
             row.getPrimaryField().setAccessible(true);
             Optional<SetterAction<Object>> setter = findSetter(field.getType());
-            new UpdateActionThread(database.getConnection(),"UPDATE" + name + " SET " + field.getName()+ "=? WHERE" + primaryKey.getName() + "=?;",stmt -> {
+            new UpdateActionThread(database.getConnection(), "UPDATE" + name + " SET " + field.getName() + "=? WHERE" + primaryKey.getName() + "=?;", stmt -> {
                 if (setter.isPresent()) setter.get().set(stmt, 1, field.get(row));
                 setField(row, row.getPrimaryField(), stmt, 2);
                 return stmt;

@@ -21,20 +21,20 @@ public class UpdateActionThread extends Thread {
         this.consumer = consumer;
     }
 
+    @Override
+    public synchronized void start() {
+        try (PreparedStatement stmt = connection.prepareStatement(statement)) {
+            PreparedStatement applied = consumer.prepare(stmt);
+            applied.executeUpdate();
+        } catch (SQLException e) {
+            log.error("Could not update database.", e);
+        } catch (Exception e) {
+            log.error("Statement preparer error.", e);
+        }
+    }
+
     @FunctionalInterface
     public interface StatementPreparer {
         PreparedStatement prepare(PreparedStatement stmt) throws Exception;
-    }
-
-    @Override
-    public synchronized void start() {
-        try(PreparedStatement stmt = connection.prepareStatement(statement)) {
-            PreparedStatement applied = consumer.prepare(stmt);
-            applied.executeUpdate();
-        } catch (SQLException e){
-            log.error("Could not update database.",e);
-        } catch (Exception e){
-            log.error("Statement preparer error.",e);
-        }
     }
 }

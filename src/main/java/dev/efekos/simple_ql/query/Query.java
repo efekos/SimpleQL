@@ -10,15 +10,6 @@ public class Query {
     private int limit = 0;
     private int skip = 0;
 
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        if(limit <= 0) throw new IllegalArgumentException("Limit must be greater than 0");
-        this.limit = limit;
-    }
-
     public Query(List<Sort> sorts, List<Condition> conditions) {
         this.sorts = sorts;
         this.conditions = conditions;
@@ -27,11 +18,20 @@ public class Query {
     public Query() {
     }
 
-    public void addSort(Sort sort){
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        if (limit <= 0) throw new IllegalArgumentException("Limit must be greater than 0");
+        this.limit = limit;
+    }
+
+    public void addSort(Sort sort) {
         sorts.add(sort);
     }
 
-    public void addCondition(Condition condition){
+    public void addCondition(Condition condition) {
         conditions.add(condition);
     }
 
@@ -43,24 +43,24 @@ public class Query {
         return conditions;
     }
 
-    public void setSkip(int skip) {
-        this.skip = skip;
-    }
-
     public int getSkip() {
         return skip;
     }
 
-    public String toSqlCode(String tableName){
+    public void setSkip(int skip) {
+        this.skip = skip;
+    }
+
+    public String toSqlCode(String tableName) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("SELECT * FROM ");
         builder.append(tableName);
 
-        if(!conditions.isEmpty()) builder.append(" WHERE ");
+        if (!conditions.isEmpty()) builder.append(" WHERE ");
         for (int i = 0; i < getConditions().size(); i++) {
             Condition condition = getConditions().get(i);
-            if(i!=0) builder.append(" AND ");
+            if (i != 0) builder.append(" AND ");
             builder.append("(");
             builder.append(condition.toSqlCode());
             builder.append(")");
@@ -69,16 +69,16 @@ public class Query {
         for (Sort sort : getSorts()) {
             builder.append(" ORDER BY ");
             builder.append(sort.fieldName());
-            if(sort.ascending()) builder.append(" ASC");
+            if (sort.ascending()) builder.append(" ASC");
             else builder.append(" DESC");
         }
 
 
-        if(limit!=0) {
+        if (limit != 0) {
             builder.append(" LIMIT ");
             builder.append(limit);
         }
-        if(skip!=0) {
+        if (skip != 0) {
             builder.append(" OFFSET ");
             builder.append(skip);
         }
