@@ -55,3 +55,7 @@ public class SimpleQLExample {
 }
 
 ```
+
+## License
+
+This project is licensed under the MIT License.
