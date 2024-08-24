@@ -21,7 +21,7 @@ public class AnyOfCondition implements Condition {
         for (int i = 0; i < conditions.size(); i++) {
             String sql = conditions.get(i).toSqlCode();
             builder.append(sql);
-            if (i !=conditions.size()-1) builder.append(" OR ");
+            if (i != conditions.size() - 1) builder.append(" OR ");
         }
 
         return builder.append(")").toString();

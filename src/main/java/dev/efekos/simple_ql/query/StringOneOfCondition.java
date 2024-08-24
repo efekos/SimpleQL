@@ -14,7 +14,7 @@ public class StringOneOfCondition implements Condition {
 
     @Override
     public String toSqlCode() {
-        return fieldName + " IN (" + String.join(",", value.stream().map(s -> "'"+s+"'").toList()) + ")";
+        return fieldName + " IN (" + String.join(",", value.stream().map(s -> "'" + s + "'").toList()) + ")";
     }
 
 }
