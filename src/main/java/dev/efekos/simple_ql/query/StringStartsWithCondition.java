@@ -40,4 +40,12 @@ public class StringStartsWithCondition implements Condition {
         return fieldName + " LIKE '" + value + "%'";
     }
 
+    @Override
+    public String toString() {
+        return "StringStartsWithCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
 }

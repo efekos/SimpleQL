@@ -52,4 +52,11 @@ public class AnyOfCondition implements Condition {
         return builder.append(")").toString();
     }
 
+    @Override
+    public String toString() {
+        return "AnyOfCondition{" +
+                "conditions=" + conditions +
+                '}';
+    }
+
 }

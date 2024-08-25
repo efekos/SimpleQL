@@ -42,4 +42,12 @@ public class StringOneOfCondition implements Condition {
         return fieldName + " IN (" + String.join(",", value.stream().map(s -> "'" + s + "'").toList()) + ")";
     }
 
+    @Override
+    public String toString() {
+        return "StringOneOfCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value=" + value +
+                '}';
+    }
+
 }

@@ -62,4 +62,10 @@ public class QueryBuilder {
         return query;
     }
 
+    @Override
+    public String toString() {
+        return "QueryBuilder{" +
+                "query=" + query +
+                '}';
+    }
 }

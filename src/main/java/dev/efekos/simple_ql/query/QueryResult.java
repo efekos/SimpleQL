@@ -37,4 +37,12 @@ public record QueryResult<T>(Exception exception, List<T> result) {
         return exception != null;
     }
 
+    @Override
+    public String toString() {
+        return "QueryResult{" +
+                "exception=" + exception +
+                ", result=" + result +
+                '}';
+    }
+
 }

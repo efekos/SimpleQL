@@ -43,6 +43,16 @@ public class Query {
     public Query() {
     }
 
+    @Override
+    public String toString() {
+        return "Query{" +
+                "sorts=" + sorts +
+                ", conditions=" + conditions +
+                ", limit=" + limit +
+                ", skip=" + skip +
+                '}';
+    }
+
     public int getLimit() {
         return limit;
     }

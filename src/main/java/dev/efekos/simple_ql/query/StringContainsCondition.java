@@ -40,4 +40,12 @@ public class StringContainsCondition implements Condition {
         return fieldName + " LIKE '%" + value + "%'";
     }
 
+    @Override
+    public String toString() {
+        return "StringContainsCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
 }

@@ -40,4 +40,12 @@ public class StringRegexCondition implements Condition {
         return fieldName + " REGEXP '" + value + "'";
     }
 
+    @Override
+    public String toString() {
+        return "StringRegexCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
 }

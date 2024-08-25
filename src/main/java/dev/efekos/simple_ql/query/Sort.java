@@ -26,4 +26,12 @@
 package dev.efekos.simple_ql.query;
 
 public record Sort(String fieldName, boolean ascending) {
+
+    @Override
+    public String toString() {
+        return "Sort{" +
+                "fieldName='" + fieldName + '\'' +
+                ", ascending=" + ascending +
+                '}';
+    }
 }

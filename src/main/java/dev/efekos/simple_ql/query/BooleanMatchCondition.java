@@ -40,4 +40,12 @@ public class BooleanMatchCondition implements Condition {
         return fieldName + " = " + (value ? '1' : '0');
     }
 
+    @Override
+    public String toString() {
+        return "BooleanMatchCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value=" + value +
+                '}';
+    }
+
 }

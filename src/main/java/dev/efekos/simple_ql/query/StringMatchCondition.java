@@ -40,4 +40,12 @@ public class StringMatchCondition implements Condition {
         return fieldName + " = '" + value + "'";
     }
 
+    @Override
+    public String toString() {
+        return "StringMatchCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
 }

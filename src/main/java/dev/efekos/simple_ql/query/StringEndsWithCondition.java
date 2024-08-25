@@ -40,4 +40,12 @@ public class StringEndsWithCondition implements Condition {
         return fieldName + " LIKE '%" + value + "'";
     }
 
+    @Override
+    public String toString() {
+        return "StringEndsWithCondition{" +
+                "fieldName='" + fieldName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+
 }
