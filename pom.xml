@@ -6,7 +6,7 @@
 
     <groupId>dev.efekos</groupId>
     <artifactId>SimpleQL</artifactId>
-    <version>1.0</version>
+    <version>1.2</version>
 
     <properties>
         <java_version>17</java_version>
