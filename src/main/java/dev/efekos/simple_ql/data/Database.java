@@ -25,6 +25,8 @@
 
 package dev.efekos.simple_ql.data;
 
+import dev.efekos.simple_ql.implementor.Implementor;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -54,10 +56,10 @@ public class Database {
         return Optional.ofNullable(tables.get(tableName));
     }
 
-    public <T extends TableRow<T>> Table<T> registerTable(String name, Class<T> clazz) {
+    public <T extends TableRow<T>> Table<T> registerTable(String name, Class<T> clazz, Implementor<?,?>... implementors) {
         if (tables.containsKey(name))
             throw new IllegalStateException("A table with name '" + name + "' is already registered.");
-        Table<T> table = new Table<>(this, name, clazz);
+        Table<T> table = new Table<>(this, name, clazz,implementors);
         table.checkExistent();
         tables.put(name, table);
         return table;

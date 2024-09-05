@@ -52,14 +52,25 @@ public class Table<T extends TableRow<T>> {
     private Field primaryKey = null;
     private final Map<Class<?>,Implementor<?,?>> implementors = new HashMap<>();
 
-    public void putImplementor(Class<?> clazz, Implementor<?,?> implementor) {
-        implementors.put(clazz,implementor);
+    @SuppressWarnings("unchecked")
+    private <C> Class<C> grabClass(Implementor<C,?> implementor){
+        try {
+            for (java.lang.reflect.Type type : implementor.getClass().getGenericInterfaces())
+                if (type instanceof ParameterizedType pt && pt.getRawType()==Implementor.class) return (Class<C>) Class.forName(pt.getActualTypeArguments()[0].getTypeName());
+            return null;
+        } catch ( Exception e){
+             throw new IllegalStateException();
+        }
     }
 
-    Table(Database database, String name, Class<T> clazz) {
+    Table(Database database, String name, Class<T> clazz,Implementor<?,?>... implementors) {
         this.database = database;
         this.name = name;
         this.clazz = clazz;
+
+        for (Implementor<?, ?> implementor : implementors) {
+            this.implementors.put(grabClass(implementor), implementor);
+        }
 
         for (Field field : clazz.getDeclaredFields())
             if (field.isAnnotationPresent(Primary.class)) {
@@ -100,6 +111,7 @@ public class Table<T extends TableRow<T>> {
         if (type.isAssignableFrom(UUID.class)) return "VARCHAR(36)";
         if (type.isAssignableFrom(String.class) || TableRowTypeAdapter.class.isAssignableFrom(type) || type.isEnum())
             return "TEXT";
+        if (implementors.containsKey(type)) return implementors.get(type).type();
         throw new IllegalStateException("Could not determine a column type for field " + field);
     }
 
@@ -128,6 +140,25 @@ public class Table<T extends TableRow<T>> {
         }
     }
 
+    private boolean hasImplementor(Object o){
+        return implementors.containsKey(o.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Implementor<Object,Object> getImplementor(Object o){
+        return (Implementor<Object, Object>) implementors.get(o.getClass());
+    }
+
+    private Object writeUsingImplementor(Object o){
+        return hasImplementor(o) ? getImplementor(o).write(o) : o;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object readUsingImplementor(Object o,Class<?> claz){
+        Implementor<Object, Object> implementor = (Implementor<Object, Object>) implementors.get(claz);
+        return implementor!=null ? implementor.read(o) : o;
+    }
+
     public T insertRow(Consumer<T> propertyChanger) {
         try {
             Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
@@ -145,7 +176,7 @@ public class Table<T extends TableRow<T>> {
                     Object value = field.get(instance);
                     Optional<SetterAction<Object>> setter = findSetter(value.getClass());
                     if (setter.isEmpty()) throw new NoSetterException(field);
-                    setter.get().set(stmt, i + 1, value);
+                    setter.get().set(stmt, i + 1, writeUsingImplementor(value));
                 }
 
                 stmt.executeUpdate();
@@ -220,7 +251,7 @@ public class Table<T extends TableRow<T>> {
             Optional<? extends GetterAction<?>> getterOptional = findGetter(field.getType());
             if (getterOptional.isEmpty()) throw new NoGetterException(field);
             Object o = getterOptional.get().get(set, field.getName());
-            field.set(instance, o);
+            field.set(instance, readUsingImplementor(o,field.getType()));
         }
 
         i = instance;
@@ -269,6 +300,7 @@ public class Table<T extends TableRow<T>> {
             stmt.setString(index, adapter.adapt());
         });
         if (c.isEnum()) return Optional.of((stmt, index, value) -> stmt.setString(index, value.toString()));
+        if(implementors.containsKey(c))return Optional.of((SetterAction<Object>) implementors.get(c).setter());
         return Optional.empty();
     }
 
@@ -312,6 +344,7 @@ public class Table<T extends TableRow<T>> {
                 return null;
             }
         });
+        if(implementors.containsKey(c))return Optional.of((GetterAction<C>) implementors.get(c).getter());
         return Optional.empty();
     }
 
