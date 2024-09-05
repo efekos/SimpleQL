@@ -6,6 +6,7 @@ import dev.efekos.simple_ql.query.Conditions;
 import dev.efekos.simple_ql.query.QueryBuilder;
 import dev.efekos.simple_ql.query.QueryResult;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +28,8 @@ public class SimpleQLTesting {
             c.setName("John Doe");
             c.setMoney(new CustomerMoney(50,0));
             c.setGender(CustomerGender.FEMALE);
+            c.setRelatives(new ArrayList<>());
+            c.addRelative("mom");
         });
 
         // Data querying.
@@ -54,10 +57,11 @@ public class SimpleQLTesting {
         money.setCents(10);
         customer.setMoney(money);
         customer.setGender(CustomerGender.MALE);
+        customer.addRelative("dad");
         customer.clean();
 
         // Data deleting.
-        customer.delete();
+        // customer.delete();
 
         // Database disconnection.
         database.disconnect();
