@@ -1,10 +1,9 @@
 package dev.efekos.simple_ql;
 
-import dev.efekos.simple_ql.data.TableRowTypeAdapter;
 
 import java.util.Objects;
 
-public class CustomerMoney implements TableRowTypeAdapter {
+public class CustomerMoney {
 
     private int dollars;
     private int cents;
@@ -51,7 +50,6 @@ public class CustomerMoney implements TableRowTypeAdapter {
                 '}';
     }
 
-    @Override
     public String adapt() {
         return dollars + "." + cents;
     }

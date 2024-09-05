@@ -19,7 +19,7 @@ public class SimpleQLTesting {
         database.connect();
 
         // Getting tables.
-        Table<Customer> customers = database.registerTable("customers", Customer.class);
+        Table<Customer> customers = database.registerTable("customers", Customer.class, new CustomerMoneyImplementor());
 
         // Data insertion.
         UUID id = UUID.randomUUID();
