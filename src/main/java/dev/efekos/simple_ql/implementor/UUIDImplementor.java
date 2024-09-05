@@ -28,6 +28,8 @@ package dev.efekos.simple_ql.implementor;
 import dev.efekos.simple_ql.data.GetterAction;
 import dev.efekos.simple_ql.data.SetterAction;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.UUID;
 
 public class UUIDImplementor implements Implementor<UUID,String> {
@@ -43,13 +45,13 @@ public class UUIDImplementor implements Implementor<UUID,String> {
     }
 
     @Override
-    public SetterAction<UUID> setter() {
-        return (stmt, index, value) -> stmt.setString(index, value.toString());
+    public SetterAction<String> setter() {
+        return PreparedStatement::setString;
     }
 
     @Override
-    public GetterAction<UUID> getter() {
-        return (s, columnName) -> UUID.fromString(s.getString(columnName));
+    public GetterAction<String> getter() {
+        return ResultSet::getString;
     }
 
 }

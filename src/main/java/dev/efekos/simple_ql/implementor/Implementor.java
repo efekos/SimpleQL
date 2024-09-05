@@ -32,7 +32,7 @@ public interface Implementor<T,V> {
 
     V write(T value);
     T read(V value);
-    SetterAction<T> setter();
-    GetterAction<T> getter();
+    SetterAction<V> setter();
+    GetterAction<V> getter();
 
 }
