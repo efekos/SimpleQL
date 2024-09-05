@@ -32,7 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.UUID;
 
-public class UUIDImplementor implements Implementor<UUID,String> {
+public class UUIDImplementor implements Implementor<UUID, String> {
 
     @Override
     public String write(UUID value) {

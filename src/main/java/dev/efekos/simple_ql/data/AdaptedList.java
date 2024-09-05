@@ -34,51 +34,31 @@ import java.util.function.UnaryOperator;
 
 public class AdaptedList<T> implements TableRowTypeAdapter {
 
-    private final List<T> list;
-    private final Implementor<T,String> implementor;
-
-    public static <TY> AdaptedList<TY> clone(AdaptedList<TY> list){
-        return new AdaptedList<>(list.list, list.implementor);
-    }
-
-    public AdaptedList(Implementor<T,String> implementor) {
-        this.list = new ArrayList<>();
-        this.implementor = implementor;
-    }
-
-    public AdaptedList(List<T> list, Implementor<T,String> implementor) {
-        this.list = list;
-        this.implementor = implementor;
-    }
-
     public static final char ARRAY_SEPARATOR = '\uE492';
     public static final char IMPLEMENTOR_SEPARATOR = '\uE302';
     public static final char ARRAY_START = '\uE305';
     public static final char ARRAY_END = '\uE306';
+    private final List<T> list;
+    private final Implementor<T, String> implementor;
+    public AdaptedList(Implementor<T, String> implementor) {
+        this.list = new ArrayList<>();
+        this.implementor = implementor;
+    }
+    public AdaptedList(List<T> list, Implementor<T, String> implementor) {
+        this.list = list;
+        this.implementor = implementor;
+    }
 
-    @Override
-    public String adapt() {
-        if(list.isEmpty())return implementor.getClass().getName()+IMPLEMENTOR_SEPARATOR+ARRAY_START+ARRAY_END;
-        StringBuilder builder = new StringBuilder()
-                .append(implementor.getClass().getName())
-                .append(IMPLEMENTOR_SEPARATOR)
-                .append(ARRAY_START);
-
-        for (int i = 0; i < list.size(); i++) {
-            T row = list.get(i);
-            if(i!=0)builder.append(ARRAY_SEPARATOR);
-            builder.append(implementor.write(row));
-        }
-
-        builder.append(ARRAY_END);
-        return builder.toString();
+    public static <TY> AdaptedList<TY> clone(AdaptedList<TY> list) {
+        return new AdaptedList<>(list.list, list.implementor);
     }
 
     @SuppressWarnings("unchecked")
-    public static AdaptedList<Object> readAdapted(String i){
+    public static AdaptedList<Object> readAdapted(String i) {
         String[] split = i.split(IMPLEMENTOR_SEPARATOR + "");
         String implementorClassName = split[0];
-        if(implementorClassName==null||implementorClassName.isEmpty())throw new IllegalStateException("implementorClassName is "+implementorClassName);
+        if (implementorClassName == null || implementorClassName.isEmpty())
+            throw new IllegalStateException("implementorClassName is " + implementorClassName);
         try {
             Class<?> implementorClass = Class.forName(implementorClassName);
             Constructor<?> constructor = implementorClass.getConstructor();
@@ -88,14 +68,32 @@ public class AdaptedList<T> implements TableRowTypeAdapter {
             ArrayList<Object> res = new ArrayList<>();
 
             for (String s : adaptedTypes) res.add(implementorInstance.read(s));
-            return new AdaptedList<>(res,implementorInstance);
-        } catch (ClassNotFoundException e){
-            throw new IllegalStateException("Implementor class "+implementorClassName+" not found",e);
-        } catch (NoSuchMethodException e){
-            throw new IllegalStateException("Implementor class constructor "+implementorClassName+" not found",e);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e){
-            throw new IllegalStateException("Implementor class "+implementorClassName+" cannot be instantiated",e);
+            return new AdaptedList<>(res, implementorInstance);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Implementor class " + implementorClassName + " not found", e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Implementor class constructor " + implementorClassName + " not found", e);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Implementor class " + implementorClassName + " cannot be instantiated", e);
         }
+    }
+
+    @Override
+    public String adapt() {
+        if (list.isEmpty()) return implementor.getClass().getName() + IMPLEMENTOR_SEPARATOR + ARRAY_START + ARRAY_END;
+        StringBuilder builder = new StringBuilder()
+                .append(implementor.getClass().getName())
+                .append(IMPLEMENTOR_SEPARATOR)
+                .append(ARRAY_START);
+
+        for (int i = 0; i < list.size(); i++) {
+            T row = list.get(i);
+            if (i != 0) builder.append(ARRAY_SEPARATOR);
+            builder.append(implementor.write(row));
+        }
+
+        builder.append(ARRAY_END);
+        return builder.toString();
     }
 
     public int size() {

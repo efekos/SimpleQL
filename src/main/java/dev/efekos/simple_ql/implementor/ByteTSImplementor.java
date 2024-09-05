@@ -31,11 +31,11 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ByteTSImplementor implements Implementor<Byte,String> {
+public class ByteTSImplementor implements Implementor<Byte, String> {
 
     @Override
     public String write(Byte value) {
-        return value+"";
+        return value + "";
     }
 
     @Override

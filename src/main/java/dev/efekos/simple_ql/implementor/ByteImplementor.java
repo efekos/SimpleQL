@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ByteImplementor implements Implementor<Byte,Byte> {
+public class ByteImplementor implements Implementor<Byte, Byte> {
 
     @Override
     public Byte write(Byte value) {

@@ -31,11 +31,11 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ShortTSImplementor implements Implementor<Short,String> {
+public class ShortTSImplementor implements Implementor<Short, String> {
 
     @Override
     public String write(Short value) {
-        return value+"";
+        return value + "";
     }
 
     @Override

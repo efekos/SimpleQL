@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class FloatImplementor implements Implementor<Float,Float> {
+public class FloatImplementor implements Implementor<Float, Float> {
 
     @Override
     public Float write(Float value) {

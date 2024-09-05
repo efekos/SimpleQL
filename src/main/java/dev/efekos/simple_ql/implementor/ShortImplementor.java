@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class ShortImplementor implements Implementor<Short,Short> {
+public class ShortImplementor implements Implementor<Short, Short> {
 
     @Override
     public Short write(Short value) {

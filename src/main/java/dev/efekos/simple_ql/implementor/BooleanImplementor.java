@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class BooleanImplementor implements Implementor<Boolean,Boolean> {
+public class BooleanImplementor implements Implementor<Boolean, Boolean> {
 
     @Override
     public Boolean write(Boolean value) {

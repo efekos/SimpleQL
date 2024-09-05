@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class DoubleImplementor implements Implementor<Double,Double> {
+public class DoubleImplementor implements Implementor<Double, Double> {
 
     @Override
     public Double write(Double value) {

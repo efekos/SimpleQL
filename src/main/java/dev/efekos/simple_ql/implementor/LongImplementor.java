@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class LongImplementor implements Implementor<Long,Long> {
+public class LongImplementor implements Implementor<Long, Long> {
 
     @Override
     public Long write(Long value) {

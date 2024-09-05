@@ -31,11 +31,11 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class FloatTSImplementor implements Implementor<Float,String> {
+public class FloatTSImplementor implements Implementor<Float, String> {
 
     @Override
     public String write(Float value) {
-        return value+"";
+        return value + "";
     }
 
     @Override

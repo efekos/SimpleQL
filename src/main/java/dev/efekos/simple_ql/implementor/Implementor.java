@@ -28,12 +28,16 @@ package dev.efekos.simple_ql.implementor;
 import dev.efekos.simple_ql.data.GetterAction;
 import dev.efekos.simple_ql.data.SetterAction;
 
-public interface Implementor<T,V> {
+public interface Implementor<T, V> {
 
     V write(T value);
+
     T read(V value);
+
     SetterAction<V> setter();
+
     GetterAction<V> getter();
+
     String type();
 
 }

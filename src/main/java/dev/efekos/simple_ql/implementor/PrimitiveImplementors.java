@@ -29,25 +29,24 @@ import java.util.UUID;
 
 public class PrimitiveImplementors {
 
+    public static final Implementor<String, String> STRING = new StringImplementor();
+    public static final Implementor<Integer, Integer> INTEGER = new IntegerImplementor();
+    public static final Implementor<Integer, String> INTEGER_TS = new IntegerTSImplementor();
+    public static final Implementor<Double, Double> DOUBLE = new DoubleImplementor();
+    public static final Implementor<Double, String> DOUBLE_TS = new DoubleTSImplementor();
+    public static final Implementor<Float, Float> FLOAT = new FloatImplementor();
+    public static final Implementor<Float, String> FLOAT_TS = new FloatTSImplementor();
+    public static final Implementor<Boolean, Boolean> BOOLEAN = new BooleanImplementor();
+    public static final Implementor<Boolean, String> BOOLEAN_TS = new BooleanTSImplementor();
+    public static final Implementor<Long, Long> LONG = new LongImplementor();
+    public static final Implementor<Long, String> LONG_TS = new LongTSImplementor();
+    public static final Implementor<Short, Short> SHORT = new ShortImplementor();
+    public static final Implementor<Short, String> SHORT_TS = new ShortTSImplementor();
+    public static final Implementor<Byte, Byte> BYTE = new ByteImplementor();
+    public static final Implementor<Byte, String> BYTE_TS = new ByteTSImplementor();
+    public static final Implementor<UUID, String> UUID = new UUIDImplementor();
     PrimitiveImplementors() {
         throw new UnsupportedOperationException();
     }
-
-    public static final Implementor<String,String> STRING = new StringImplementor();
-    public static final Implementor<Integer,Integer> INTEGER = new IntegerImplementor();
-    public static final Implementor<Integer,String> INTEGER_TS = new IntegerTSImplementor();
-    public static final Implementor<Double,Double> DOUBLE = new DoubleImplementor();
-    public static final Implementor<Double,String> DOUBLE_TS = new DoubleTSImplementor();
-    public static final Implementor<Float,Float> FLOAT = new FloatImplementor();
-    public static final Implementor<Float,String> FLOAT_TS = new FloatTSImplementor();
-    public static final Implementor<Boolean,Boolean> BOOLEAN = new BooleanImplementor();
-    public static final Implementor<Boolean,String> BOOLEAN_TS = new BooleanTSImplementor();
-    public static final Implementor<Long,Long> LONG = new LongImplementor();
-    public static final Implementor<Long,String> LONG_TS = new LongTSImplementor();
-    public static final Implementor<Short,Short> SHORT = new ShortImplementor();
-    public static final Implementor<Short,String> SHORT_TS = new ShortTSImplementor();
-    public static final Implementor<Byte,Byte> BYTE = new ByteImplementor();
-    public static final Implementor<Byte,String> BYTE_TS = new ByteTSImplementor();
-    public static final Implementor<UUID,String> UUID = new UUIDImplementor();
 
 }

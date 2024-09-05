@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class StringImplementor implements Implementor<String,String> {
+public class StringImplementor implements Implementor<String, String> {
 
     @Override
     public String write(String value) {

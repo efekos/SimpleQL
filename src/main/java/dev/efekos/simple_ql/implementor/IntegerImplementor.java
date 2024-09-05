@@ -31,7 +31,7 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class IntegerImplementor implements Implementor<Integer,Integer> {
+public class IntegerImplementor implements Implementor<Integer, Integer> {
 
     @Override
     public Integer write(Integer value) {
