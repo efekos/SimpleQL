@@ -47,7 +47,7 @@ public class UpdateActionThread extends Thread {
     }
 
     @Override
-    public synchronized void start() {
+    public void run() {
         try (PreparedStatement stmt = connection.prepareStatement(statement)) {
             PreparedStatement applied = consumer.prepare(stmt);
             applied.executeUpdate();
