@@ -50,6 +50,10 @@ public class Database {
         }
     }
 
+    public Optional<Table<?>> getTable(String tableName) {
+        return Optional.ofNullable(tables.get(tableName));
+    }
+
     public <T extends TableRow<T>> Table<T> registerTable(String name, Class<T> clazz) {
         if (tables.containsKey(name))
             throw new IllegalStateException("A table with name '" + name + "' is already registered.");
