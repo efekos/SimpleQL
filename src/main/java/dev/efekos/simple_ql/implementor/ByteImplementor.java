@@ -53,4 +53,8 @@ public class ByteImplementor implements Implementor<Byte,Byte> {
         return ResultSet::getByte;
     }
 
+    @Override
+    public String type() {
+        return "BYTE";
+    }
 }

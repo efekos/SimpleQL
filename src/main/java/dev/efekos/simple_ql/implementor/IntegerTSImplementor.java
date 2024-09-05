@@ -53,5 +53,8 @@ public class IntegerTSImplementor implements Implementor<Integer,String> {
         return ResultSet::getString;
     }
 
-
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }

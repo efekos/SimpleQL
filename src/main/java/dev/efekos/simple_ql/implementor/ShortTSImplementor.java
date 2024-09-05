@@ -53,4 +53,8 @@ public class ShortTSImplementor implements Implementor<Short,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }

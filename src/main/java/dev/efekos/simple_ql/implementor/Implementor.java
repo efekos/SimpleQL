@@ -34,5 +34,6 @@ public interface Implementor<T,V> {
     T read(V value);
     SetterAction<V> setter();
     GetterAction<V> getter();
+    String type();
 
 }

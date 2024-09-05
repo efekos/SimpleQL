@@ -53,4 +53,8 @@ public class FloatImplementor implements Implementor<Float,Float> {
         return ResultSet::getFloat;
     }
 
+    @Override
+    public String type() {
+        return "REAL";
+    }
 }

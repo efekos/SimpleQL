@@ -53,4 +53,8 @@ public class LongImplementor implements Implementor<Long,Long> {
         return ResultSet::getLong;
     }
 
+    @Override
+    public String type() {
+        return "REAL";
+    }
 }

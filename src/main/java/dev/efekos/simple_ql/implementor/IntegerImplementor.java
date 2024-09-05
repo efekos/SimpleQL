@@ -53,4 +53,8 @@ public class IntegerImplementor implements Implementor<Integer,Integer> {
         return ResultSet::getInt;
     }
 
+    @Override
+    public String type() {
+        return "INT";
+    }
 }

@@ -53,4 +53,8 @@ public class LongTSImplementor implements Implementor<Long,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }

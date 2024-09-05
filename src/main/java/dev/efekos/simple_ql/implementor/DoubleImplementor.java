@@ -53,4 +53,8 @@ public class DoubleImplementor implements Implementor<Double,Double> {
         return ResultSet::getDouble;
     }
 
+    @Override
+    public String type() {
+        return "REAL";
+    }
 }

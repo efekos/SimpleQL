@@ -32,6 +32,7 @@ import dev.efekos.simple_ql.annotation.Unique;
 import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
 import dev.efekos.simple_ql.exception.TableException;
+import dev.efekos.simple_ql.implementor.Implementor;
 import dev.efekos.simple_ql.query.Query;
 import dev.efekos.simple_ql.query.QueryResult;
 import dev.efekos.simple_ql.thread.UpdateActionThread;
@@ -40,9 +41,7 @@ import java.lang.reflect.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Table<T extends TableRow<T>> {
@@ -51,6 +50,11 @@ public class Table<T extends TableRow<T>> {
     private final String name;
     private final Class<T> clazz;
     private Field primaryKey = null;
+    private final Map<Class<?>,Implementor<?,?>> implementors = new HashMap<>();
+
+    public void putImplementor(Class<?> clazz, Implementor<?,?> implementor) {
+        implementors.put(clazz,implementor);
+    }
 
     Table(Database database, String name, Class<T> clazz) {
         this.database = database;

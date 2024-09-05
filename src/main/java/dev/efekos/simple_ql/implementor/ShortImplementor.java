@@ -53,4 +53,8 @@ public class ShortImplementor implements Implementor<Short,Short> {
         return ResultSet::getShort;
     }
 
+    @Override
+    public String type() {
+        return "INT";
+    }
 }

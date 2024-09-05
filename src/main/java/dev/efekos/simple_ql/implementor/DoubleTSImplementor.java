@@ -53,4 +53,8 @@ public class DoubleTSImplementor implements Implementor<Double,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }

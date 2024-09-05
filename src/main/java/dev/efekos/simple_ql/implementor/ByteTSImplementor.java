@@ -53,4 +53,9 @@ public class ByteTSImplementor implements Implementor<Byte,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "VARCHAR(4)";
+    }
+
 }

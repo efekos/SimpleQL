@@ -53,4 +53,8 @@ public class FloatTSImplementor implements Implementor<Float,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }

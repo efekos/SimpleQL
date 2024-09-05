@@ -54,4 +54,8 @@ public class UUIDImplementor implements Implementor<UUID,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "VARCHAR(36)";
+    }
 }

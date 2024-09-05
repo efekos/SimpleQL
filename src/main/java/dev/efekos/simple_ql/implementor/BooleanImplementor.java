@@ -53,4 +53,8 @@ public class BooleanImplementor implements Implementor<Boolean,Boolean> {
         return ResultSet::getBoolean;
     }
 
+    @Override
+    public String type() {
+        return "INT";
+    }
 }

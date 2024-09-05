@@ -53,4 +53,8 @@ public class BooleanTSImplementor implements Implementor<Boolean,String> {
         return ResultSet::getString;
     }
 
+    @Override
+    public String type() {
+        return "TEXT";
+    }
 }
