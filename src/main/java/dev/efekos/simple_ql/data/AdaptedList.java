@@ -30,9 +30,13 @@ import dev.efekos.simple_ql.implementor.Implementor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
-public class AdaptedList<T> implements TableRowTypeAdapter {
+public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
 
     public static final char ARRAY_SEPARATOR = '\uE492';
     public static final char IMPLEMENTOR_SEPARATOR = '\uE302';
@@ -214,4 +218,26 @@ public class AdaptedList<T> implements TableRowTypeAdapter {
     public String toString() {
         return list.toString();
     }
+
+    public <T1> T1[] toArray(IntFunction<T1[]> generator) {
+        return list.toArray(generator);
+    }
+
+    public boolean removeIf(Predicate<? super T> filter) {
+        return list.removeIf(filter);
+    }
+
+    public Stream<T> stream() {
+        return list.stream();
+    }
+
+    public Stream<T> parallelStream() {
+        return list.parallelStream();
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        list.forEach(action);
+    }
+
 }
