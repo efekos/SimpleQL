@@ -71,7 +71,7 @@ public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
             String[] adaptedTypes = split[1].replace(ARRAY_START + "", "").replace(ARRAY_END + "", "").split(ARRAY_SEPARATOR + "");
             ArrayList<Object> res = new ArrayList<>();
 
-            for (String s : adaptedTypes) res.add(implementorInstance.read(s));
+            for (String s : adaptedTypes) if(!s.isEmpty()) res.add(implementorInstance.read(s));
             return new AdaptedList<>(res, implementorInstance);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Implementor class " + implementorClassName + " not found", e);
