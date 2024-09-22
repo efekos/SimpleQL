@@ -30,6 +30,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * An annotation used to specify the type of SQL column a field should be. Useful to sweep out the errors when SimpleQL
+ * cannot find a proper SQL column type for a field.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Type {

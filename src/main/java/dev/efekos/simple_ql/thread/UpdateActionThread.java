@@ -32,6 +32,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * A thread used to execute database actions where the result is ignored.
+ * @since 1.0
+ */
 public class UpdateActionThread extends Thread {
 
     private static final Logger log = LoggerFactory.getLogger(UpdateActionThread.class);
@@ -39,6 +43,12 @@ public class UpdateActionThread extends Thread {
     private final String statement;
     private final StatementPreparer consumer;
 
+    /**
+     * Creates a new thread
+     * @param connection Connection to execute statements on.
+     * @param statement Statement to execute.
+     * @param consumer A preparer to prepare a statement by setting values properly.
+     */
     public UpdateActionThread(Connection connection, String statement, StatementPreparer consumer) {
         super("SimpleQL-UpdateThread");
         this.connection = connection;
@@ -46,6 +56,9 @@ public class UpdateActionThread extends Thread {
         this.consumer = consumer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run() {
         try (PreparedStatement stmt = connection.prepareStatement(statement)) {
@@ -58,8 +71,20 @@ public class UpdateActionThread extends Thread {
         }
     }
 
+    /**
+     * A functional interface that is used to prepare a statement by setting values properly before execution.
+     */
     @FunctionalInterface
     public interface StatementPreparer {
+
+        /**
+         * Prepares the given statement and returns it.
+         * @param stmt A statement that already has a query added on it.
+         * @return Same statement with all arguments needed.
+         * @throws Exception Just to allow users to throw exceptions.
+         */
         PreparedStatement prepare(PreparedStatement stmt) throws Exception;
+
     }
+
 }

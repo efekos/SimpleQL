@@ -30,6 +30,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * An annotation used to mark a field as a primary key, which adds <code>PRIMARY_KEY</code> to its creation code. Each
+ * class can have only one field, having multiple primary keys will cause unexpected behavior and not having any will
+ * cause a {@link dev.efekos.simple_ql.exception.NoPrimaryKeyException}. When a field is annotated with PrimaryKey,
+ * {@link dev.efekos.simple_ql.data.Table}s will treat the field as the identifier of a rows.
+ * {@link dev.efekos.simple_ql.data.Table#getRow(Object)} will try to search rows using the primary key field, therefore
+ * the argument given to {@link dev.efekos.simple_ql.data.Table#getRow(Object)} must be the same type with the field.
+ * @since 1.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Primary {

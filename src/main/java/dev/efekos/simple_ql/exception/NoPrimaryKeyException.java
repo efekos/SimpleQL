@@ -25,8 +25,21 @@
 
 package dev.efekos.simple_ql.exception;
 
+/**
+ * An exception thrown by SimpleQL when a class used for tables does not have any fields that are annotated with
+ * {@link dev.efekos.simple_ql.annotation.Primary}.
+ */
 public class NoPrimaryKeyException extends RuntimeException {
+
+    /** Constructs a new exception with the specified detail message.
+     * The cause is not initialized, and may subsequently be initialized by a
+     * call to {@link #initCause}.
+     *
+     * @param   message   the detail message. The detail message is saved for
+     *          later retrieval by the {@link #getMessage()} method.
+     */
     public NoPrimaryKeyException(String message) {
         super(message);
     }
+
 }
