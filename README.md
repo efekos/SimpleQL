@@ -1,5 +1,14 @@
 # SimpleQL
 
+![](https://flat.badgen.net/github/license/efekos/SimpleQL)
+![](https://flat.badgen.net/github/release/efekos/SimpleQL)
+![](https://flat.badgen.net/github/releases/efekos/SimpleQL)
+![](https://flat.badgen.net/github/stars/efekos/SimpleQL)
+![](https://flat.badgen.net/github/issues/efekos/SimpleQL)
+![](https://flat.badgen.net/github/prs/efekos/SimpleQL)
+![](https://flat.badgen.net/#maven/v/metadata-url/https/efekos.dev/maven/dev/efekos/SimpleQL/maven-metadata.xml)
+[![](https://flat.badgen.net/#static/JavaDoc/Available/green)](https://efekos.dev/javadoc/simpleql/1.0/index.html)
+
 This library lets you use an SQL database without knowing the SQL language at all! You can easily create tables, insert,
 update and delete rows and manage database connections.
 
@@ -56,6 +65,39 @@ public class SimpleQLExample {
 
 ```
 
-## License
+# Installation
+
+## Maven
+
+1. Add this repository if you don't have it in your repositories.
+````xml
+<repository>
+    <id>efekosdev</id>
+    <url>https://efekos.dev/maven</url>
+</repository>
+````
+
+2. Add this dependency. Replace the version with the latest version, which is ![](https://badgen.net/github/release/efekos/SimpleQL).
+````xml
+<dependency>
+    <groupId>dev.efekos</groupId>
+    <artifactId>SimpleQL</artifactId>
+    <version>1.0.0</version>
+</dependency> 
+````
+
+## Gradle
+
+1. Add this repository if you don't have it in your repositories
+````gradle
+maven { url 'https://efekos.dev/maven' } 
+````
+
+2. Add this dependency. Replace the version with the latest version. which is ![](https://badgen.net/github/release/efekos/SimpleQL).
+````gradle
+implementation 'dev.efekos:SimpleQL:1.0.0' 
+````
+
+# License
 
 This project is licensed under the MIT License.
