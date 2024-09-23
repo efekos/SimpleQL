@@ -36,6 +36,11 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+/**
+ * An implementation of {@link TableRowTypeAdapter} made for lists. Wraps {@link ArrayList}s of {@link T} using an
+ * {@link Implementor} and makes using lists in {@link TableRow}s much easier than it is.
+ * @param <T>
+ */
 public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
 
     public static final char ARRAY_SEPARATOR = '\uE492';

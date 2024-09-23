@@ -42,10 +42,21 @@ public enum DatabaseType {
         this.name = name;
     }
 
+    /**
+     * Returns whether this SQL database has a sub-database system where a schema must be created and tables should be
+     * created under it.
+     * @return Whether this database should have schemas or not.
+     */
     public boolean shouldCreateSchema() {
         return createSchema;
     }
 
+    /**
+     * Returns a unique, short name to identify this DatabaseType and distinguish it from others. This name is usually
+     * the first word after {@code jdbc} in the database url. This value is also used by
+     * {@link DatabaseInformation#getType()} to figure out the database type that suits the information.
+     * @return Name of this database type.
+     */
     public String getName() {
         return name;
     }

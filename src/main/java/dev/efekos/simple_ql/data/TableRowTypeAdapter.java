@@ -32,6 +32,10 @@ package dev.efekos.simple_ql.data;
  */
 public interface TableRowTypeAdapter {
 
+    /**
+     * Converts this class into a {@link String} that represents the content of this class.
+     * @return What would {@link #toString()} return if it was properly written.
+     */
     String adapt();
 
 }

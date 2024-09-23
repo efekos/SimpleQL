@@ -36,6 +36,8 @@ import dev.efekos.simple_ql.implementor.Implementor;
 import dev.efekos.simple_ql.query.Query;
 import dev.efekos.simple_ql.query.QueryResult;
 import dev.efekos.simple_ql.thread.UpdateActionThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.sql.PreparedStatement;
@@ -44,14 +46,29 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * One of the main classes of SimpleQL, used to manage a table created using a {@link Database}. Each table will have a
+ * list of {@link T} when using, and it'll be converted to table rows in the background when updating the database. All
+ * update actions are done by {@link UpdateActionThread}, making updates a lot faster.
+ * @param <T> Type which rows of this table will become.
+ */
 public class Table<T extends TableRow<T>> {
 
+    private static final Logger log = LoggerFactory.getLogger(Table.class);
     private final Database database;
     private final String name;
     private final Class<T> clazz;
     private final Map<Class<?>, Implementor<?, ?>> implementors = new HashMap<>();
     private Field primaryKey = null;
 
+    /**
+     * Creates a new table instance. This constructor isn't public as Tables should be created using
+     * {@link Database#registerTable(String, Class, Implementor[])}.
+     * @param database Parent of this table.
+     * @param name Name of this table to use on queries and updates.
+     * @param clazz Class of {@link T} to avoid the requirement of insane reflection.
+     * @param implementors A list of {@link Implementor} to use while dealing with {@link T}.
+     */
     Table(Database database, String name, Class<T> clazz, Implementor<?, ?>... implementors) {
         this.database = database;
         this.name = name;
@@ -116,14 +133,17 @@ public class Table<T extends TableRow<T>> {
         throw new IllegalStateException("Could not determine a column type for field " + field);
     }
 
+    /**
+     * Runs an SQL query on the database to create the table if it doesn't exist.
+     */
     void checkExistent() {
-        try (PreparedStatement stmt = database.getConnection().prepareStatement(createGenerationCode())) {
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new TableException("Could not create table '" + name + "': " + e.getMessage());
-        }
+        new UpdateActionThread(database.getConnection(),createGenerationCode(),stmt1 -> stmt1).start();
     }
 
+    /**
+     * Cleans a row by saving its changed fields to the database, executing a statement for each field.
+     * @param row {@link T} instance to clean.
+     */
     void clean(T row) {
         if (!row.isDirty()) return;
 
@@ -160,6 +180,11 @@ public class Table<T extends TableRow<T>> {
         return implementor != null ? implementor.read(o) : o;
     }
 
+    /**
+     * Creates a new row and inserts it to the database using one statement.
+     * @param propertyChanger Some code to run before inserting the row.
+     * @return Created row as an instance if there are no errors, {@code null} otherwise.
+     */
     public T insertRow(Consumer<T> propertyChanger) {
         try {
             Constructor<T> constructor = clazz.getConstructor(Class.class, Table.class);
@@ -167,7 +192,8 @@ public class Table<T extends TableRow<T>> {
             T instance = constructor.newInstance(clazz, this);
             propertyChanger.accept(instance);
             instance.cleanWithoutUpdate();
-            try (PreparedStatement stmt = database.getConnection().prepareStatement(createInsertionCode())) {
+
+            new UpdateActionThread(database.getConnection(),createInsertionCode(),stmt -> {
 
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
@@ -179,15 +205,12 @@ public class Table<T extends TableRow<T>> {
                     if (setter.isEmpty()) throw new NoSetterException(field);
                     setter.get().set(stmt, i + 1, writeUsingImplementor(value));
                 }
+                return stmt;
+            }).start();
 
-                stmt.executeUpdate();
-                return instance;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+            return instance;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Table row insertion error at table '"+name+"'",e);
             return null;
         }
     }
@@ -212,6 +235,15 @@ public class Table<T extends TableRow<T>> {
         return mainBuilder.append(" ").append(nameBuilder).append(" VALUES ").append(valueBuilder).toString();
     }
 
+    /**
+     * Queries rows by their primary keys which are defined in {@link T} using {@link Primary} annotation. Parameter
+     * {@code key} must be the same type with the primary field of {@link T}.
+     * @param key Key to search rows.
+     * @return An {@link Optional} that will have a {@link T} instance if the query was successfully executed and a row
+     * was successfully found.
+     * @throws IllegalStateException if {@code key} isn't the same type with {@link Primary} field of {@link T}.
+     * @apiNote Does not use threads to execute query, might be slower than expected.
+     */
     public Optional<T> getRow(Object key) {
         if (!primaryKey.getType().equals(key.getClass()))
             throw new IllegalStateException("Primary key of " + clazz.getName() + " is " + primaryKey.getType().getName() + ", not " + key.getClass().getName());
@@ -349,6 +381,11 @@ public class Table<T extends TableRow<T>> {
         return Optional.empty();
     }
 
+    /**
+     * Deletes a row from the database, executing one statement in the process.
+     * @param row Row to delete.
+     * @apiNote <strong>DO NOT USE.</strong> Use {@link TableRow#delete()} instead.
+     */
     void delete(T row) {
         Optional<SetterAction<Object>> setter = findSetter(primaryKey.getType());
         if (setter.isEmpty()) throw new NoSetterException(primaryKey);
@@ -363,6 +400,13 @@ public class Table<T extends TableRow<T>> {
         }).start();
     }
 
+    /**
+     * Executes a specific query on the table and returns the results as a {@link QueryResult<T>}. An empty query can be
+     * used to retrieve all rows.
+     * @param query A {@link Query} to execute.
+     * @return A {@link QueryResult} that contains either an error or a list of {@link T}s.
+     * @apiNote Does not use threads, might be slow.
+     */
     public QueryResult<T> query(Query query) {
         try (PreparedStatement stmt = database.getConnection().prepareStatement(query.toSqlCode(name))) {
             ResultSet set = stmt.executeQuery();
