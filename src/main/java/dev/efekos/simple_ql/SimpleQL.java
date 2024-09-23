@@ -32,12 +32,14 @@ import java.sql.SQLException;
 
 /**
  * Main class of SimpleQL, used to create {@link Database}s.
+ *
  * @since 1.0
  */
 public final class SimpleQL {
 
     /**
      * Creates a new {@link Database} based on given {@link DatabaseInformation}, and starts a connection.
+     *
      * @param information Information about the database to connect.
      * @return A {@link Database} instance that is already connected which means running {@link Database#connect()}.
      */
@@ -53,8 +55,9 @@ public final class SimpleQL {
 
     /**
      * Creates a new {@link Database} based on given url, username and password.
-     * @param url Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
-     * @param user Username of the account being used to connect to the database.
+     *
+     * @param url      Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
+     * @param user     Username of the account being used to connect to the database.
      * @param password Password of the account being used to connect to the database.
      * @return A {@link Database} instance that is already connected which means running {@link Database#connect()}.
      */
@@ -64,10 +67,11 @@ public final class SimpleQL {
 
     /**
      * Creates a new {@link Database} based on given url, database name, username and password.
-     * @param url Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
+     *
+     * @param url          Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
      * @param databaseName Name of the database that this {@link Database} instance will be connected to.
-     * @param user Username of the account being us ed to connect to this database.
-     * @param password Password of the account being used to connect to this database.
+     * @param user         Username of the account being us ed to connect to this database.
+     * @param password     Password of the account being used to connect to this database.
      * @return A {@link Database} instance that is already connected which means running {@link Database#connect()}.
      */
     public static Database createDatabase(String url, String databaseName, String user, String password) {
@@ -77,6 +81,7 @@ public final class SimpleQL {
     /**
      * Creates a new {@link Database} based on given url. The database must require no accounts at all as this method
      * doesn't consume any credentials.
+     *
      * @param url Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
      * @return A {@link Database} instance that is already connected which means running {@link Database#connect()}.
      */
@@ -87,7 +92,8 @@ public final class SimpleQL {
     /**
      * Creates a new {@link Database} based on given url and database name. The database must require no accounts at all
      * as this method doesn't consume any credentials.
-     * @param url Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
+     *
+     * @param url          Database URL. See {@link java.sql.DriverManager#getConnection(String)} for more information.
      * @param databaseName Name of the database that this {@link Database} instance will be connected to.
      * @return A {@link Database} instance that is already connected which means running {@link Database#connect()}.
      */

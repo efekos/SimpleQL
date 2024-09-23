@@ -32,6 +32,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation used to mark a field unique, which adds <code>UNIQUE</code> to its creation code.
+ *
  * @since 1.0
  */
 @Retention(RetentionPolicy.RUNTIME)

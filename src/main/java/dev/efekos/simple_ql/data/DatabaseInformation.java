@@ -29,6 +29,7 @@ import java.util.Objects;
 
 /**
  * A data class used to store information of a database.
+ *
  * @since 1.0
  */
 public class DatabaseInformation {
@@ -40,11 +41,12 @@ public class DatabaseInformation {
 
     /**
      * Creates a new DatabaseInformation.
+     *
      * @param connectionUrl URL of the database. See {@link java.sql.DriverManager#getConnection(String)} for more information.
-     * @param username Username.
-     * @param password Password.
-     * @param databaseName Name of the database to connect. Not necessary as there is a default one, and will be ignored
-     *                     if detected database type doesn't support sub-databases (such as SQLite).
+     * @param username      Username.
+     * @param password      Password.
+     * @param databaseName  Name of the database to connect. Not necessary as there is a default one, and will be ignored
+     *                      if detected database type doesn't support sub-databases (such as SQLite).
      */
     public DatabaseInformation(String connectionUrl, String username, String password, String databaseName) {
         this.connectionUrl = connectionUrl;
@@ -55,9 +57,10 @@ public class DatabaseInformation {
 
     /**
      * Creates a new DatabaseInformation
+     *
      * @param connectionUrl URL of the database. See {@link java.sql.DriverManager#getConnection(String)} for more information.
-     * @param username Username.
-     * @param password Password.
+     * @param username      Username.
+     * @param password      Password.
      */
     public DatabaseInformation(String connectionUrl, String username, String password) {
         this.connectionUrl = connectionUrl;
@@ -80,6 +83,7 @@ public class DatabaseInformation {
 
     /**
      * Finds a database type suitable for this set of DatabaseInformation based on the URL.
+     *
      * @return A suitable {@link DatabaseType} if found, {@code null} otherwise.
      */
     public DatabaseType getType() {
@@ -109,6 +113,7 @@ public class DatabaseInformation {
 
     /**
      * Returns the database URL.
+     *
      * @return Database URL.
      */
     public String getConnectionUrl() {
@@ -117,6 +122,7 @@ public class DatabaseInformation {
 
     /**
      * Returns the username if present.
+     *
      * @return Username if present, {@code null} otherwise.
      */
     public String getUsername() {
@@ -125,6 +131,7 @@ public class DatabaseInformation {
 
     /**
      * Returns the password if present.
+     *
      * @return Password if present, {@code null} otherwise.
      */
     public String getPassword() {
@@ -133,6 +140,7 @@ public class DatabaseInformation {
 
     /**
      * Returns the database  name if present.
+     *
      * @return Database name if present, {@code simple_ql} otherwise.
      */
     public String getDatabaseName() {

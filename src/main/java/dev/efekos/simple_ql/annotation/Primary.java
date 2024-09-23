@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
  * {@link dev.efekos.simple_ql.data.Table}s will treat the field as the identifier of a rows.
  * {@link dev.efekos.simple_ql.data.Table#getRow(Object)} will try to search rows using the primary key field, therefore
  * the argument given to {@link dev.efekos.simple_ql.data.Table#getRow(Object)} must be the same type with the field.
+ *
  * @since 1.0
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -31,12 +31,14 @@ import java.lang.reflect.Field;
 /**
  * An exception thrown by SimpleQL when initializing a table fails because a {@link dev.efekos.simple_ql.data.SetterAction}
  * suitable for a field could not be found.
+ *
  * @since 1.0
  */
 public class NoSetterException extends RuntimeException {
 
     /**
      * Creates a new NoGetterException.
+     *
      * @param field A field that has no {@link dev.efekos.simple_ql.data.SetterAction}s added for it.
      */
     public NoSetterException(Field field) {

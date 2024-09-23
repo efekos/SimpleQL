@@ -34,6 +34,7 @@ import java.sql.SQLException;
 
 /**
  * A thread used to execute database actions where the result is ignored.
+ *
  * @since 1.0
  */
 public class UpdateActionThread extends Thread {
@@ -45,9 +46,10 @@ public class UpdateActionThread extends Thread {
 
     /**
      * Creates a new thread
+     *
      * @param connection Connection to execute statements on.
-     * @param statement Statement to execute.
-     * @param consumer A preparer to prepare a statement by setting values properly.
+     * @param statement  Statement to execute.
+     * @param consumer   A preparer to prepare a statement by setting values properly.
      */
     public UpdateActionThread(Connection connection, String statement, StatementPreparer consumer) {
         super("SimpleQL-UpdateThread");
@@ -79,6 +81,7 @@ public class UpdateActionThread extends Thread {
 
         /**
          * Prepares the given statement and returns it.
+         *
          * @param stmt A statement that already has a query added on it.
          * @return Same statement with all arguments needed.
          * @throws Exception Just to allow users to throw exceptions.

@@ -45,6 +45,7 @@ public class PrimitiveImplementors {
     public static final Implementor<Byte, Byte> BYTE = new ByteImplementor();
     public static final Implementor<Byte, String> BYTE_TS = new ByteTSImplementor();
     public static final Implementor<UUID, String> UUID = new UUIDImplementor();
+
     PrimitiveImplementors() {
         throw new UnsupportedOperationException();
     }

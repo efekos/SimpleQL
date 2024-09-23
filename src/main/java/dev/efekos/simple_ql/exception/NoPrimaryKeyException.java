@@ -31,12 +31,13 @@ package dev.efekos.simple_ql.exception;
  */
 public class NoPrimaryKeyException extends RuntimeException {
 
-    /** Constructs a new exception with the specified detail message.
+    /**
+     * Constructs a new exception with the specified detail message.
      * The cause is not initialized, and may subsequently be initialized by a
      * call to {@link #initCause}.
      *
-     * @param   message   the detail message. The detail message is saved for
-     *          later retrieval by the {@link #getMessage()} method.
+     * @param message the detail message. The detail message is saved for
+     *                later retrieval by the {@link #getMessage()} method.
      */
     public NoPrimaryKeyException(String message) {
         super(message);

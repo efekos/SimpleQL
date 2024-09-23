@@ -39,9 +39,10 @@ import java.util.stream.Stream;
 /**
  * An implementation of {@link TableRowTypeAdapter} made for lists. Wraps {@link ArrayList}s of {@link T} using an
  * {@link Implementor} and makes using lists in {@link TableRow}s much easier than it is.
+ *
  * @param <T>
  */
-public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
+public class AdaptedList<T> implements TableRowTypeAdapter, Iterable<T> {
 
     public static final char ARRAY_SEPARATOR = '\uE492';
     public static final char IMPLEMENTOR_SEPARATOR = '\uE302';
@@ -49,10 +50,12 @@ public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
     public static final char ARRAY_END = '\uE306';
     private final List<T> list;
     private final Implementor<T, String> implementor;
+
     public AdaptedList(Implementor<T, String> implementor) {
         this.list = new ArrayList<>();
         this.implementor = implementor;
     }
+
     public AdaptedList(List<T> list, Implementor<T, String> implementor) {
         this.list = list;
         this.implementor = implementor;
@@ -76,7 +79,7 @@ public class AdaptedList<T> implements TableRowTypeAdapter,Iterable<T> {
             String[] adaptedTypes = split[1].replace(ARRAY_START + "", "").replace(ARRAY_END + "", "").split(ARRAY_SEPARATOR + "");
             ArrayList<Object> res = new ArrayList<>();
 
-            for (String s : adaptedTypes) if(!s.isEmpty()) res.add(implementorInstance.read(s));
+            for (String s : adaptedTypes) if (!s.isEmpty()) res.add(implementorInstance.read(s));
             return new AdaptedList<>(res, implementorInstance);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Implementor class " + implementorClassName + " not found", e);

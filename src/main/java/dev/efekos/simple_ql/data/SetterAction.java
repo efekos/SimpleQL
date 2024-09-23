@@ -35,6 +35,7 @@ import java.sql.SQLException;
  * value. This is essential because of the structure of {@link PreparedStatement}s where each primitive type has its own
  * method to change, such as {@link PreparedStatement#setString(int, String)} or
  * {@link PreparedStatement#setInt(int, int)}. It also allows serialization and deserialization to be done here.
+ *
  * @param <T> Type which this action is for.
  * @since 1.0
  */

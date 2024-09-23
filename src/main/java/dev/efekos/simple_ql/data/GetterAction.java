@@ -33,6 +33,7 @@ import java.sql.SQLException;
  * This is essential because of the structure of {@link ResultSet} where each primitive type has its own method to
  * retrieve, such as {@link ResultSet#getString(String)} or {@link ResultSet#getInt(String)}. It also allows
  * serialization and deserialization to be done here.
+ *
  * @param <T> Type which this action is for.
  * @since 1.0
  */

@@ -50,6 +50,7 @@ import java.util.function.Consumer;
  * One of the main classes of SimpleQL, used to manage a table created using a {@link Database}. Each table will have a
  * list of {@link T} when using, and it'll be converted to table rows in the background when updating the database. All
  * update actions are done by {@link UpdateActionThread}, making updates a lot faster.
+ *
  * @param <T> Type which rows of this table will become.
  */
 public class Table<T extends TableRow<T>> {
@@ -64,9 +65,10 @@ public class Table<T extends TableRow<T>> {
     /**
      * Creates a new table instance. This constructor isn't public as Tables should be created using
      * {@link Database#registerTable(String, Class, Implementor[])}.
-     * @param database Parent of this table.
-     * @param name Name of this table to use on queries and updates.
-     * @param clazz Class of {@link T} to avoid the requirement of insane reflection.
+     *
+     * @param database     Parent of this table.
+     * @param name         Name of this table to use on queries and updates.
+     * @param clazz        Class of {@link T} to avoid the requirement of insane reflection.
      * @param implementors A list of {@link Implementor} to use while dealing with {@link T}.
      */
     Table(Database database, String name, Class<T> clazz, Implementor<?, ?>... implementors) {
@@ -137,11 +139,12 @@ public class Table<T extends TableRow<T>> {
      * Runs an SQL query on the database to create the table if it doesn't exist.
      */
     void checkExistent() {
-        new UpdateActionThread(database.getConnection(),createGenerationCode(),stmt1 -> stmt1).start();
+        new UpdateActionThread(database.getConnection(), createGenerationCode(), stmt1 -> stmt1).start();
     }
 
     /**
      * Cleans a row by saving its changed fields to the database, executing a statement for each field.
+     *
      * @param row {@link T} instance to clean.
      */
     void clean(T row) {
@@ -182,6 +185,7 @@ public class Table<T extends TableRow<T>> {
 
     /**
      * Creates a new row and inserts it to the database using one statement.
+     *
      * @param propertyChanger Some code to run before inserting the row.
      * @return Created row as an instance if there are no errors, {@code null} otherwise.
      */
@@ -193,7 +197,7 @@ public class Table<T extends TableRow<T>> {
             propertyChanger.accept(instance);
             instance.cleanWithoutUpdate();
 
-            new UpdateActionThread(database.getConnection(),createInsertionCode(),stmt -> {
+            new UpdateActionThread(database.getConnection(), createInsertionCode(), stmt -> {
 
                 Field[] fields = clazz.getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
@@ -210,7 +214,7 @@ public class Table<T extends TableRow<T>> {
 
             return instance;
         } catch (Exception e) {
-            log.error("Table row insertion error at table '"+name+"'",e);
+            log.error("Table row insertion error at table '" + name + "'", e);
             return null;
         }
     }
@@ -238,6 +242,7 @@ public class Table<T extends TableRow<T>> {
     /**
      * Queries rows by their primary keys which are defined in {@link T} using {@link Primary} annotation. Parameter
      * {@code key} must be the same type with the primary field of {@link T}.
+     *
      * @param key Key to search rows.
      * @return An {@link Optional} that will have a {@link T} instance if the query was successfully executed and a row
      * was successfully found.
@@ -383,6 +388,7 @@ public class Table<T extends TableRow<T>> {
 
     /**
      * Deletes a row from the database, executing one statement in the process.
+     *
      * @param row Row to delete.
      * @apiNote <strong>DO NOT USE.</strong> Use {@link TableRow#delete()} instead.
      */
@@ -403,6 +409,7 @@ public class Table<T extends TableRow<T>> {
     /**
      * Executes a specific query on the table and returns the results as a {@link QueryResult<T>}. An empty query can be
      * used to retrieve all rows.
+     *
      * @param query A {@link Query} to execute.
      * @return A {@link QueryResult} that contains either an error or a list of {@link T}s.
      * @apiNote Does not use threads, might be slow.

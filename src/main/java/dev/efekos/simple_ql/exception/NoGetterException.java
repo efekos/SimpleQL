@@ -30,12 +30,14 @@ import java.lang.reflect.Field;
 /**
  * An exception thrown by SimpleQL when initializing a table fails because a {@link dev.efekos.simple_ql.data.GetterAction}
  * suitable for a field could not be found.
+ *
  * @since 1.0
  */
 public class NoGetterException extends RuntimeException {
 
     /**
      * Creates a new NoGetterException.
+     *
      * @param field A field that has no {@link dev.efekos.simple_ql.data.GetterAction}s added for it.
      */
     public NoGetterException(Field field) {
