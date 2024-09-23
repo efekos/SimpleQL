@@ -25,7 +25,12 @@
 
 package dev.efekos.simple_ql.data;
 
+/**
+ * An enum used to change behavior of a {@link Database} or {@link Table} based on its connection URL.
+ * @since 1.0
+ */
 public enum DatabaseType {
+
     MYSQL(true, "mysql"),
     SQLITE(false, "sqlite");
 

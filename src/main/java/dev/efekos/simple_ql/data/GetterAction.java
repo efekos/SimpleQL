@@ -28,6 +28,14 @@ package dev.efekos.simple_ql.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * An interface used to define a getter action that will return the value of a specified column from a {@link ResultSet}.
+ * This is essential because of the structure of {@link ResultSet} where each primitive type has its own method to
+ * retrieve, such as {@link ResultSet#getString(String)} or {@link ResultSet#getInt(String)}. It also allows
+ * serialization and deserialization to be done here.
+ * @param <T> Type which this action is for.
+ * @since 1.0
+ */
 @FunctionalInterface
 public interface GetterAction<T> {
     T get(ResultSet s, String columnName) throws SQLException;

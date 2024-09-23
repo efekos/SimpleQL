@@ -25,6 +25,11 @@
 
 package dev.efekos.simple_ql.data;
 
+/**
+ * An interface used to adapt custom classes used in {@link TableRow}s to {@link String}s. Please keep in mind that
+ * classes that implement this interface must also have a method with the signature
+ * {@code public static T readAdapted(String input)} where T is the class itself.
+ */
 public interface TableRowTypeAdapter {
 
     String adapt();

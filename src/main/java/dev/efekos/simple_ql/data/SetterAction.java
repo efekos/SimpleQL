@@ -26,8 +26,18 @@
 package dev.efekos.simple_ql.data;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+/**
+ * An interface used to define a setter action that will set a parameter of a {@link PreparedStatement} to a specific
+ * value. This is essential because of the structure of {@link PreparedStatement}s where each primitive type has its own
+ * method to change, such as {@link PreparedStatement#setString(int, String)} or
+ * {@link PreparedStatement#setInt(int, int)}. It also allows serialization and deserialization to be done here.
+ * @param <T> Type which this action is for.
+ * @since 1.0
+ */
 @FunctionalInterface
 public interface SetterAction<T> {
     void set(PreparedStatement stmt, int index, T value) throws SQLException;

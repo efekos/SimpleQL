@@ -27,6 +27,10 @@ package dev.efekos.simple_ql.data;
 
 import java.util.Objects;
 
+/**
+ * A data class used to store information of a database.
+ * @since 1.0
+ */
 public class DatabaseInformation {
 
     private String connectionUrl;
@@ -34,6 +38,14 @@ public class DatabaseInformation {
     private String password;
     private String databaseName = "simple_ql";
 
+    /**
+     * Creates a new DatabaseInformation.
+     * @param connectionUrl URL of the database. See {@link java.sql.DriverManager#getConnection(String)} for more information.
+     * @param username Username.
+     * @param password Password.
+     * @param databaseName Name of the database to connect. Not necessary as there is a default one, and will be ignored
+     *                     if detected database type doesn't support sub-databases (such as SQLite).
+     */
     public DatabaseInformation(String connectionUrl, String username, String password, String databaseName) {
         this.connectionUrl = connectionUrl;
         this.username = username;
@@ -41,12 +53,21 @@ public class DatabaseInformation {
         this.databaseName = databaseName;
     }
 
+    /**
+     * Creates a new DatabaseInformation
+     * @param connectionUrl URL of the database. See {@link java.sql.DriverManager#getConnection(String)} for more information.
+     * @param username Username.
+     * @param password Password.
+     */
     public DatabaseInformation(String connectionUrl, String username, String password) {
         this.connectionUrl = connectionUrl;
         this.username = username;
         this.password = password;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "DatabaseInformation{" +
@@ -57,12 +78,19 @@ public class DatabaseInformation {
                 '}';
     }
 
+    /**
+     * Finds a database type suitable for this set of DatabaseInformation based on the URL.
+     * @return A suitable {@link DatabaseType} if found, {@code null} otherwise.
+     */
     public DatabaseType getType() {
         for (DatabaseType type : DatabaseType.values())
             if (connectionUrl.startsWith("jdbc:" + type.getName())) return type;
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,40 +99,44 @@ public class DatabaseInformation {
         return Objects.equals(getConnectionUrl(), that.getConnectionUrl()) && Objects.equals(getUsername(), that.getUsername()) && Objects.equals(getPassword(), that.getPassword()) && Objects.equals(databaseName, that.databaseName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getConnectionUrl(), getUsername(), getPassword(), databaseName);
     }
 
+    /**
+     * Returns the database URL.
+     * @return Database URL.
+     */
     public String getConnectionUrl() {
         return connectionUrl;
     }
 
-    public void setConnectionUrl(String connectionUrl) {
-        this.connectionUrl = connectionUrl;
-    }
-
+    /**
+     * Returns the username if present.
+     * @return Username if present, {@code null} otherwise.
+     */
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
+    /**
+     * Returns the password if present.
+     * @return Password if present, {@code null} otherwise.
+     */
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    /**
+     * Returns the database  name if present.
+     * @return Database name if present, {@code simple_ql} otherwise.
+     */
     public String getDatabaseName() {
         return databaseName;
     }
 
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
-    }
 }
