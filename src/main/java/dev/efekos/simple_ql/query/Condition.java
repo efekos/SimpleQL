@@ -25,8 +25,16 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * Represents an SQL condition that will add a {@code WHERE} statement to a {@link Query} when converting it to sql code.
+ * @since 1.0
+ */
 public interface Condition {
 
+    /**
+     * Converts this condition to a {@code WHERE} statement.
+     * @return Generated SQL code.
+     */
     String toSqlCode();
 
 }

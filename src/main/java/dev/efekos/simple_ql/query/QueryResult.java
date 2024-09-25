@@ -27,16 +27,35 @@ package dev.efekos.simple_ql.query;
 
 import java.util.List;
 
+/**
+ * Represents the result of an executed {@link Query}.
+ * @param exception Resulted exception if any occurred.
+ * @param result A list of rows if the query was successfully executed.
+ * @param <T> Type of the {@link dev.efekos.simple_ql.data.TableRow}s of the {@link dev.efekos.simple_ql.data.Table}
+ *            the {@link Query} was executed on.
+ * @since 1.0
+ */
 public record QueryResult<T>(Exception exception, List<T> result) {
 
+    /**
+     * Returns whether {@link #result} is {@code null} or not.
+     * @return Whether {@link #result} is {@code null} or not.
+     */
     public boolean hasResult() {
         return result != null;
     }
 
+    /**
+     * Returns whether {@link #exception} is {@code null} or not.
+     * @return Whether {@link #exception} is {@code null} or not.
+     */
     public boolean hasException() {
         return exception != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "QueryResult{" +

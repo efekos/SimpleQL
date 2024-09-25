@@ -25,8 +25,17 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * Represents an SQL {@code SORT} statement. Can be used to sort fields by ascending or descending order.
+ * @param fieldName Name of the field/column to sort by.
+ * @param ascending Whether the rows should be sorted in ascending order or not.
+ * @since 1.0
+ */
 public record Sort(String fieldName, boolean ascending) {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "Sort{" +
@@ -34,4 +43,5 @@ public record Sort(String fieldName, boolean ascending) {
                 ", ascending=" + ascending +
                 '}';
     }
+
 }

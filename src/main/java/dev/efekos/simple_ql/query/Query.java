@@ -28,6 +28,10 @@ package dev.efekos.simple_ql.query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a built SQL query, ready to be executed.
+ * @since 1.0
+ */
 public class Query {
 
     private List<Sort> sorts = new ArrayList<>();
@@ -35,11 +39,19 @@ public class Query {
     private int limit = 0;
     private int skip = 0;
 
+    /**
+     * Constructs a built query.
+     * @param sorts A list of {@link Sort}s.
+     * @param conditions A list of {@link Condition}s.
+     */
     public Query(List<Sort> sorts, List<Condition> conditions) {
         this.sorts = sorts;
         this.conditions = conditions;
     }
 
+    /**
+     * Constructs a new query.
+     */
     public Query() {
     }
 
@@ -53,39 +65,79 @@ public class Query {
                 '}';
     }
 
+    /**
+     * Returns the limit of the query.
+     * @return Limit.
+     */
     public int getLimit() {
         return limit;
     }
 
+    /**
+     * Changes the limit of the query. Setting a limit that isn't 0 will add {@code LIMIT X} to the created statement.
+     * @param limit New limit.
+     * @throws IllegalArgumentException if {@code limit} is a negative number.
+     */
     public void setLimit(int limit) {
         if (limit <= 0) throw new IllegalArgumentException("Limit must be greater than 0");
         this.limit = limit;
     }
 
+    /**
+     * Adds a sort to the sort list, which will add that sort as a {@code SORT} statement.
+     * @param sort A {@link Sort} instance.
+     */
     public void addSort(Sort sort) {
         sorts.add(sort);
     }
 
+    /**
+     * Adds a condition to the condition list, which will add the condition as a {@code WHERE} statement.
+     * @param condition A {@link Condition} instance.
+     */
     public void addCondition(Condition condition) {
         conditions.add(condition);
     }
 
+    /**
+     * Returns the sort list.
+     * @return Sort list.
+     */
     public List<Sort> getSorts() {
         return sorts;
     }
 
+    /**
+     * Returns the condition list.
+     * @return Condition list.
+     */
     public List<Condition> getConditions() {
         return conditions;
     }
 
+    /**
+     * Returns the amount of rows this query will skip.
+     * @return Skip count.
+     */
     public int getSkip() {
         return skip;
     }
 
+    /**
+     * Changes the amount of rows this query should skip, which will add a {@code SKIP} statement to the query if skip
+     * is not 0.
+     * @param skip New skip count.
+     */
     public void setSkip(int skip) {
+        if (skip <= 0) throw new IllegalArgumentException("Skip must be greater than 0");
         this.skip = skip;
     }
 
+    /**
+     * Generates an SQL statement that this {@link Query} represents.
+     * @param tableName Name of the table that is using this query.
+     * @return Generated query.
+     */
     public String toSqlCode(String tableName) {
         StringBuilder builder = new StringBuilder();
 
