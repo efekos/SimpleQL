@@ -25,21 +25,37 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * One of the builtin conditions types to use in {@link Query}s. Checks if a {@code VARCHAR}/{@code TEXT} field contains
+ * a {@link String}.
+ * @since 1.0
+ */
 public class StringContainsCondition implements Condition {
 
     private final String fieldName;
     private final String value;
 
+    /**
+     * Constructs a new {@link StringContainsCondition}.
+     * @param fieldName Name of the field/column. Used for SQL code generation.
+     * @param value {@link String} value.
+     */
     public StringContainsCondition(String fieldName, String value) {
         this.fieldName = fieldName;
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         return fieldName + " LIKE '%" + value + "%'";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "StringContainsCondition{" +
