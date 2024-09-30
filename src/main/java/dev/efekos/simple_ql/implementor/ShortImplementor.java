@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class ShortImplementor implements Implementor<Short, Short> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Short write(Short value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Short read(Short value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<Short> setter() {
         return PreparedStatement::setShort;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<Short> getter() {
         return ResultSet::getShort;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "INT";
     }
+
 }

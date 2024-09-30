@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class LongImplementor implements Implementor<Long, Long> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long write(Long value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Long read(Long value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<Long> setter() {
         return PreparedStatement::setLong;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<Long> getter() {
         return ResultSet::getLong;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "REAL";
     }
+
 }

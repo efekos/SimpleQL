@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class DoubleTSImplementor implements Implementor<Double, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(Double value) {
         return value + "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Double read(String value) {
         return Double.parseDouble(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "TEXT";
     }
+
 }

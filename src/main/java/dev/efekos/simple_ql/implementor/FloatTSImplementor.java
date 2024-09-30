@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class FloatTSImplementor implements Implementor<Float, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(Float value) {
         return value + "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Float read(String value) {
         return Float.parseFloat(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "TEXT";
     }
+
 }

@@ -27,6 +27,11 @@ package dev.efekos.simple_ql.implementor;
 
 import java.util.UUID;
 
+/**
+ * An instance of every primitive implementor to use for either specific purposes or
+ * {@link dev.efekos.simple_ql.data.AdaptedList}s.
+ * @since 1.0
+ */
 public class PrimitiveImplementors {
 
     public static final Implementor<String, String> STRING = new StringImplementor();
@@ -46,6 +51,9 @@ public class PrimitiveImplementors {
     public static final Implementor<Byte, String> BYTE_TS = new ByteTSImplementor();
     public static final Implementor<UUID, String> UUID = new UUIDImplementor();
 
+    /**
+     * @throws UnsupportedOperationException because an instance of this class should not be created.
+     */
     PrimitiveImplementors() {
         throw new UnsupportedOperationException();
     }

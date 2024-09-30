@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class BooleanTSImplementor implements Implementor<Boolean, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(Boolean value) {
         return value ? "1b" : "0b";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean read(String value) {
         return value.equals("1b");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "TEXT";
     }
+
 }

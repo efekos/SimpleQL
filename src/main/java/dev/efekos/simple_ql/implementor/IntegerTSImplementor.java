@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class IntegerTSImplementor implements Implementor<Integer, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(Integer value) {
         return value + "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer read(String value) {
         return Integer.parseInt(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "TEXT";
     }
+
 }

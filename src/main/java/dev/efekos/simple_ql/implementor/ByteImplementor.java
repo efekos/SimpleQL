@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class ByteImplementor implements Implementor<Byte, Byte> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Byte write(Byte value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Byte read(Byte value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<Byte> setter() {
         return PreparedStatement::setByte;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<Byte> getter() {
         return ResultSet::getByte;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "BYTE";
     }
+
 }

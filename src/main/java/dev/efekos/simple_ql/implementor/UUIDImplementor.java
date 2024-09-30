@@ -34,28 +34,44 @@ import java.util.UUID;
 
 public class UUIDImplementor implements Implementor<UUID, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(UUID value) {
         return value.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UUID read(String value) {
         return UUID.fromString(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "VARCHAR(36)";
     }
+
 }

@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class BooleanImplementor implements Implementor<Boolean, Boolean> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean write(Boolean value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Boolean read(Boolean value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<Boolean> setter() {
         return PreparedStatement::setBoolean;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<Boolean> getter() {
         return ResultSet::getBoolean;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "INT";
     }
+
 }

@@ -33,28 +33,44 @@ import java.sql.ResultSet;
 
 public class StringImplementor implements Implementor<String, String> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String write(String value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String read(String value) {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SetterAction<String> setter() {
         return PreparedStatement::setString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public GetterAction<String> getter() {
         return ResultSet::getString;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String type() {
         return "TEXT";
     }
+
 }
