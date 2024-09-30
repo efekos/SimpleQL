@@ -27,18 +27,33 @@ package dev.efekos.simple_ql.query;
 
 import java.util.List;
 
+/**
+ * A condition type used to merge multiple conditions under the SQL {@code OR} statement.
+ * @since 1.0
+ */
 public class AnyOfCondition implements Condition {
 
     private final List<Condition> conditions;
 
+    /**
+     * Creates a new instance using the list of conditions.
+     * @param conditions A list of conditions.
+     */
     public AnyOfCondition(List<Condition> conditions) {
         this.conditions = conditions;
     }
 
+    /**
+     * Creates a new instance using the array of conditions.
+     * @param conditions An array of conditions.
+     */
     public AnyOfCondition(Condition... conditions) {
         this.conditions = List.of(conditions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         StringBuilder builder = new StringBuilder().append("(");
@@ -52,6 +67,9 @@ public class AnyOfCondition implements Condition {
         return builder.append(")").toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "AnyOfCondition{" +

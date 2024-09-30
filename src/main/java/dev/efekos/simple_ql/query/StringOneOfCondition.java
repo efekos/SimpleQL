@@ -27,21 +27,37 @@ package dev.efekos.simple_ql.query;
 
 import java.util.List;
 
+/**
+ * A condition type used for {@link String} fields / {@code TEXT} and {@code VARCHAR} columns. Checks if an array of
+ * {@link String}s contain the value of a column using the SQL {@code IN} statement.
+ * @since 1.0
+ */
 public class StringOneOfCondition implements Condition {
 
     private final String fieldName;
     private final List<String> value;
 
+    /**
+     * Creates a new instance.
+     * @param fieldName Name of the field/column.
+     * @param value An array of values.
+     */
     public StringOneOfCondition(String fieldName, String... value) {
         this.fieldName = fieldName;
         this.value = List.of(value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         return fieldName + " IN (" + String.join(",", value.stream().map(s -> "'" + s + "'").toList()) + ")";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "StringOneOfCondition{" +

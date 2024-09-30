@@ -25,21 +25,37 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * A condition type used for {@link String} fields / {@code TEXT} and {@code VARCHAR} columns. Checks if a column is
+ * equal to aa specific value.
+ * @since 1.0
+ */
 public class StringMatchCondition implements Condition {
 
     private final String fieldName;
     private final String value;
 
+    /**
+     * Creates a new instance.
+     * @param fieldName Name of the field/column.
+     * @param value String match value.
+     */
     public StringMatchCondition(String fieldName, String value) {
         this.fieldName = fieldName;
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         return fieldName + " = '" + value + "'";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "StringMatchCondition{" +

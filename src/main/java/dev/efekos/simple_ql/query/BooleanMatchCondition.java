@@ -25,21 +25,36 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * A condition type made specifically for boolean columns. Used to check if a column is a specified boolean value.
+ * @since 1.0
+ */
 public class BooleanMatchCondition implements Condition {
 
     private final String fieldName;
     private final boolean value;
 
+    /**
+     * Creates a new instance.
+     * @param fieldName Name of the field/column.
+     * @param value Boolean match value.
+     */
     public BooleanMatchCondition(String fieldName, boolean value) {
         this.fieldName = fieldName;
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         return fieldName + " = " + (value ? '1' : '0');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "BooleanMatchCondition{" +

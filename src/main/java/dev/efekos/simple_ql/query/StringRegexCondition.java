@@ -25,6 +25,13 @@
 
 package dev.efekos.simple_ql.query;
 
+import java.util.regex.Matcher;
+
+/**
+ * A condition type used to be the {@link Condition} equivalent of {@link Matcher#matches()}. Checks if a {@code TEXT}
+ * or a {@code VARCHAR} column matches a specific regular expression using the SQL {@code REGEXP} statement.
+ * @since 1.0
+ */
 public class StringRegexCondition implements Condition {
 
     private final String fieldName;

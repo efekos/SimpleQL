@@ -25,11 +25,21 @@
 
 package dev.efekos.simple_ql.query;
 
+
+/**
+ * A condition type used to be the {@link Condition} equivalent of {@link String#startsWith(String)}.
+ * @since 1.0
+ */
 public class StringStartsWithCondition implements Condition {
 
     private final String fieldName;
     private final String value;
 
+    /**
+     * Creates a new instance.
+     * @param fieldName Name of the field/column.
+     * @param value String start value.
+     */
     public StringStartsWithCondition(String fieldName, String value) {
         this.fieldName = fieldName;
         this.value = value;

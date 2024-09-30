@@ -25,21 +25,36 @@
 
 package dev.efekos.simple_ql.query;
 
+/**
+ * A condition type used to be the {@link Condition} equivalent of {@link String#endsWith(String)}ç
+ * @since 1.0
+ */
 public class StringEndsWithCondition implements Condition {
 
     private final String fieldName;
     private final String value;
 
+    /**
+     * Creates a new instance.
+     * @param fieldName Name of the field/column.
+     * @param value String end value.
+     */
     public StringEndsWithCondition(String fieldName, String value) {
         this.fieldName = fieldName;
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toSqlCode() {
         return fieldName + " LIKE '%" + value + "'";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "StringEndsWithCondition{" +
