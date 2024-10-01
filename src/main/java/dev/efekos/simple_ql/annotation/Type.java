@@ -37,5 +37,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Type {
+
+    /**
+     * Returns SQL column type of the field this instance was annotated into.
+     * @return SQL column type.
+     */
     String value();
 }

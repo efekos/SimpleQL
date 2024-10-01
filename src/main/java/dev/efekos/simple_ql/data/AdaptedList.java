@@ -44,10 +44,28 @@ import java.util.stream.Stream;
  */
 public class AdaptedList<T> implements TableRowTypeAdapter, Iterable<T> {
 
+    /**
+     * Separator character that is placed between each array element while converting an {@link AdaptedList} into a
+     * {@link String}.
+     */
     public static final char ARRAY_SEPARATOR = '\uE492';
+
+    /**
+     * Separator character that is placed between class name of the {@link Implementor} used by an {@link AdaptedList}
+     * and the array itself while converting an {@link AdaptedList} to a {@link String}.
+     */
     public static final char IMPLEMENTOR_SEPARATOR = '\uE302';
+
+    /**
+     * Replacement for {@code [}.
+     */
     public static final char ARRAY_START = '\uE305';
+
+    /**
+     * Replacement for {@code ]}
+     */
     public static final char ARRAY_END = '\uE306';
+
     private final List<T> list;
     private final Implementor<T, String> implementor;
 
