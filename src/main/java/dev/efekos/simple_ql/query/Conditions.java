@@ -102,6 +102,7 @@ public class Conditions {
      * {@code fieldName} is the same value as {@code value} or it's number representation ({@code 0} for {@code false} and
      * {@code 1} for {@code true}).
      * @param fieldName Name of the field/column.
+     * @param value Boolean match value.
      * @return A {@link BooleanMatchCondition} with the value {@code true}.
      */
     public static BooleanMatchCondition matchBool(String fieldName, boolean value) {

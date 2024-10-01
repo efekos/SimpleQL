@@ -32,7 +32,14 @@ package dev.efekos.simple_ql.data;
  */
 public enum DatabaseType {
 
+    /**
+     * MySQL databases.
+     */
     MYSQL(true, "mysql"),
+
+    /**
+     * SQLite databases.
+     */
     SQLITE(false, "sqlite");
 
     private final boolean createSchema;

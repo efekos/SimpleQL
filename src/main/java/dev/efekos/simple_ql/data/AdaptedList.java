@@ -108,141 +108,243 @@ public class AdaptedList<T> implements TableRowTypeAdapter, Iterable<T> {
         return builder.toString();
     }
 
+    /**
+     * See {@link ArrayList#size()}.
+     */
     public int size() {
         return list.size();
     }
 
+    /**
+     * See {@link ArrayList#isEmpty()}
+     */
     public boolean isEmpty() {
         return list.isEmpty();
     }
 
+    /**
+     * See {@link ArrayList#contains(T)}}
+     */
     public boolean contains(T o) {
         return list.contains(o);
     }
 
+    /**
+     * See {@link ArrayList#iterator()}
+     */
     public Iterator<T> iterator() {
         return list.iterator();
     }
 
+    /**
+     * See {@link ArrayList#toArray()}
+     */
     public Object[] toArray() {
         return list.toArray();
     }
 
+    /**
+     * See {@link ArrayList#toArray(Object[])}
+     */
     public <T1> T1[] toArray(T1[] a) {
         return list.toArray(a);
     }
 
+    /**
+     * See {@link ArrayList#add(Object)}
+     */
     public boolean add(T t) {
         return list.add(t);
     }
 
+    /**
+     * See {@link ArrayList#remove(Object)}
+     */
     public boolean remove(T o) {
         return list.remove(o);
     }
 
+    /**
+     * See {@link ArrayList#containsAll(Collection)}
+     */
     public boolean containsAll(Collection<T> c) {
         return new HashSet<>(list).containsAll(c);
     }
 
+    /**
+     * See {@link ArrayList#addAll(Collection)}
+     */
     public boolean addAll(Collection<? extends T> c) {
         return list.addAll(c);
     }
 
+    /**
+     * See {@link ArrayList#addAll(int, Collection)}
+     */
     public boolean addAll(int index, Collection<? extends T> c) {
         return list.addAll(index, c);
     }
 
+    /**
+     * See {@link ArrayList#removeAll(Collection)}
+     */
     public boolean removeAll(Collection<?> c) {
         return list.removeAll(c);
     }
 
+    /**
+     * See {@link ArrayList#retainAll(Collection)}
+     */
     public boolean retainAll(Collection<?> c) {
         return list.retainAll(c);
     }
 
+    /**
+     * See {@link ArrayList#replaceAll(UnaryOperator)}
+     */
     public void replaceAll(UnaryOperator<T> operator) {
         list.replaceAll(operator);
     }
 
+    /**
+     * See {@link ArrayList#sort(Comparator)}
+     */
     public void sort(Comparator<? super T> c) {
         list.sort(c);
     }
 
+    /**
+     * See {@link ArrayList#clear()}
+     */
     public void clear() {
         list.clear();
     }
 
+    /**
+     * See {@link ArrayList#equals(Object)}
+     */
     @Override
     public boolean equals(Object o) {
         return list.equals(o);
     }
 
+    /**
+     * See {@link ArrayList#hashCode()}
+     */
     @Override
     public int hashCode() {
         return list.hashCode();
     }
 
+    /**
+     * See {@link ArrayList#get(int)}
+     */
     public T get(int index) {
         return list.get(index);
     }
 
+    /**
+     * See {@link ArrayList#set(int, Object)}
+     */
     public T set(int index, T element) {
         return list.set(index, element);
     }
 
+    /**
+     * See {@link ArrayList#add(int,T)}
+     */
     public void add(int index, T element) {
         list.add(index, element);
     }
 
+    /**
+     * See {@link ArrayList#remove(int)}
+     */
     public T remove(int index) {
         return list.remove(index);
     }
 
+    /**
+     * See {@link ArrayList#indexOf(Object)}
+     */
     public int indexOf(Object o) {
         return list.indexOf(o);
     }
 
+    /**
+     * See {@link ArrayList#lastIndexOf(Object)}
+     */
     public int lastIndexOf(Object o) {
         return list.lastIndexOf(o);
     }
 
+    /**
+     * See {@link ArrayList#listIterator()}
+     */
     public ListIterator<T> listIterator() {
         return list.listIterator();
     }
 
+    /**
+     * See {@link ArrayList#listIterator(int)}
+     */
     public ListIterator<T> listIterator(int index) {
         return list.listIterator(index);
     }
 
+    /**
+     * See {@link ArrayList#subList(int, int)}
+     */
     public List<T> subList(int fromIndex, int toIndex) {
         return list.subList(fromIndex, toIndex);
     }
 
+    /**
+     * See {@link ArrayList#spliterator()}
+     */
     public Spliterator<T> spliterator() {
         return list.spliterator();
     }
 
+    /**
+     * See {@link ArrayList#toString()}
+     */
     @Override
     public String toString() {
         return list.toString();
     }
 
+    /**
+     * See {@link ArrayList#toArray(IntFunction)}
+     */
     public <T1> T1[] toArray(IntFunction<T1[]> generator) {
         return list.toArray(generator);
     }
 
+    /**
+     * See {@link ArrayList#removeIf(Predicate)}
+     */
     public boolean removeIf(Predicate<? super T> filter) {
         return list.removeIf(filter);
     }
 
+    /**
+     * See {@link ArrayList#stream()}
+     */
     public Stream<T> stream() {
         return list.stream();
     }
 
+    /**
+     * See {@link ArrayList#parallelStream()}
+     */
     public Stream<T> parallelStream() {
         return list.parallelStream();
     }
 
+    /**
+     * See {@link ArrayList#forEach(Consumer)}
+     */
     @Override
     public void forEach(Consumer<? super T> action) {
         list.forEach(action);

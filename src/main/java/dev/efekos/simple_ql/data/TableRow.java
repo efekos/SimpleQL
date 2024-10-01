@@ -32,6 +32,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a row of a {@link Table} that has the same {@code T} type with {@link T}. Used to change the values of a
+ * row, delete the row or update it.
+ * @since 1.0
+ * @param <T> Type that extends this class.
+ */
 public abstract class TableRow<T extends TableRow<T>> {
 
     private final Class<T> clazz;
@@ -39,6 +45,11 @@ public abstract class TableRow<T extends TableRow<T>> {
     private final Table<T> parentTable;
     private boolean deleted;
 
+    /**
+     * Creates a new instance.
+     * @param clazz An instance of {@link T}'s class.
+     * @param parentTable Parent {@link Table} that generated this row.
+     */
     public TableRow(Class<T> clazz, Table<T> parentTable) {
         this.clazz = clazz;
         this.parentTable = parentTable;
@@ -54,14 +65,27 @@ public abstract class TableRow<T extends TableRow<T>> {
         return clazz;
     }
 
+    /**
+     * Returns {@code true} if this row has fields that should be synced with the database.
+     * @return Whether if this row has any dirty fields or not.
+     */
     public boolean isDirty() {
         return !dirtyFields.isEmpty();
     }
 
+    /**
+     * Returns {@code true} if the field with the given name should be synced with the database.
+     * @param fieldName Name of the field/column.
+     * @return Whether the field with the name {@code fieldName} is dirty or not.
+     */
     boolean isDirty(String fieldName) {
         return dirtyFields.contains(fieldName);
     }
 
+    /**
+     * Marks all fields of this row dirty, so calling {@link #clean()} will sync all of them with the database no matter
+     * if they actually changed or not.
+     */
     public void markDirty() {
         for (Field field : clazz.getDeclaredFields()) markDirty(field.getName());
     }
@@ -70,6 +94,9 @@ public abstract class TableRow<T extends TableRow<T>> {
         dirtyFields.add(name);
     }
 
+    /**
+     * Syncs all dirty fields with the database, then resets their status.
+     */
     @SuppressWarnings("unchecked")
     public void clean() {
         parentTable.clean((T) this);
@@ -80,6 +107,10 @@ public abstract class TableRow<T extends TableRow<T>> {
         dirtyFields.clear();
     }
 
+    /**
+     * Deletes this row from the database. Can only be done once every instance
+     * @throws IllegalStateException if this row has been already deleted..
+     */
     @SuppressWarnings("unchecked")
     public void delete() {
         if (deleted) throw new IllegalStateException("This row is already deleted.");

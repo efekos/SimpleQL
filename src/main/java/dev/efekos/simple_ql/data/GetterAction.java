@@ -39,5 +39,14 @@ import java.sql.SQLException;
  */
 @FunctionalInterface
 public interface GetterAction<T> {
+
+    /**
+     * Gets the column named {@code columnName} from {@code s}.
+     * @param s A set of results.
+     * @param columnName Name of the field/column.
+     * @return The value of the field/column that was in the given {@link ResultSet}.
+     * @throws SQLException If any occur
+     */
     T get(ResultSet s, String columnName) throws SQLException;
+
 }

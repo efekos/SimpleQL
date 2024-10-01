@@ -41,5 +41,13 @@ import java.sql.SQLException;
  */
 @FunctionalInterface
 public interface SetterAction<T> {
+
+    /**
+     * Sets the {@code index}th parameter of {@code stmt} to {@code value}.
+     * @param stmt Statement.
+     * @param index Parameter index.
+     * @param value Value.
+     * @throws SQLException If any occur.
+     */
     void set(PreparedStatement stmt, int index, T value) throws SQLException;
 }
