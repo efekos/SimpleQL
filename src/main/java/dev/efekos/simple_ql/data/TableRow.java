@@ -90,6 +90,10 @@ public abstract class TableRow<T extends TableRow<T>> {
         for (Field field : clazz.getDeclaredFields()) markDirty(field.getName());
     }
 
+    /**
+     * Marks a specific field dirty. Should be used by EVERY setter in order for a {@link TableRow} subclass to work.
+     * @param name Name of the field/column.
+     */
     protected void markDirty(String name) {
         dirtyFields.add(name);
     }

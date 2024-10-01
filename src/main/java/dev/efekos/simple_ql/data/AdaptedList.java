@@ -69,20 +69,40 @@ public class AdaptedList<T> implements TableRowTypeAdapter, Iterable<T> {
     private final List<T> list;
     private final Implementor<T, String> implementor;
 
+    /**
+     * Creates a new list.
+     * @param implementor Implementor that will be used while converting this list into a {@link String}.
+     */
     public AdaptedList(Implementor<T, String> implementor) {
         this.list = new ArrayList<>();
         this.implementor = implementor;
     }
 
+    /**
+     * Creates a clone of the given list.
+     * @param list A list to add elements of.
+     * @param implementor Implementor that will be used while converting this list into a {@link String}.
+     */
     public AdaptedList(List<T> list, Implementor<T, String> implementor) {
         this.list = list;
         this.implementor = implementor;
     }
 
+    /**
+     * Returns a clone of the given list.
+     * @param list Any {@link AdaptedList}.
+     * @return Clone of the given list.
+     * @param <TY> Type of the list.
+     */
     public static <TY> AdaptedList<TY> clone(AdaptedList<TY> list) {
         return new AdaptedList<>(list.list, list.implementor);
     }
 
+    /**
+     * Reads the given {@link String} and converts it into a {@link AdaptedList}.
+     * @param i Input string.
+     * @return A {@link AdaptedList} instance that represents the given {@link String}.
+     */
     @SuppressWarnings("unchecked")
     public static AdaptedList<Object> readAdapted(String i) {
         String[] split = i.split(IMPLEMENTOR_SEPARATOR + "");
@@ -108,6 +128,10 @@ public class AdaptedList<T> implements TableRowTypeAdapter, Iterable<T> {
         }
     }
 
+    /**
+     * Converts this list into a {@link String}.
+     * @return A string.
+     */
     @Override
     public String adapt() {
         if (list.isEmpty()) return implementor.getClass().getName() + IMPLEMENTOR_SEPARATOR + ARRAY_START + ARRAY_END;
