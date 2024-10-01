@@ -6,8 +6,7 @@
 ![](https://flat.badgen.net/github/stars/efekos/SimpleQL)
 ![](https://flat.badgen.net/github/issues/efekos/SimpleQL)
 ![](https://flat.badgen.net/github/prs/efekos/SimpleQL)
-![](https://flat.badgen.net/#maven/v/metadata-url/https/efekos.dev/maven/dev/efekos/SimpleQL/maven-metadata.xml)
-[![](https://flat.badgen.net/#static/JavaDoc/Available/green)](https://efekos.dev/javadoc/simpleql/1.0/index.html)
+[![](https://flat.badgen.net/static/JavaDoc/Available/green)](https://efekos.dev/javadoc/simpleql/1.0/index.html)
 
 This library lets you use an SQL database without knowing the SQL language at all! You can easily create tables, insert,
 update and delete rows and manage database connections.
