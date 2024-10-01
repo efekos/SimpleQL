@@ -113,7 +113,7 @@ public abstract class TableRow<T extends TableRow<T>> {
 
     /**
      * Deletes this row from the database. Can only be done once every instance
-     * @throws IllegalStateException if this row has been already deleted..
+     * @throws IllegalStateException if this row has been already deleted.
      */
     @SuppressWarnings("unchecked")
     public void delete() {
