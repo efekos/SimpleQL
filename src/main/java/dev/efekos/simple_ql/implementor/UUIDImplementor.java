@@ -32,6 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.UUID;
 
+/**
+ * One of builtin {@link PrimitiveImplementors} in SimpleQL.
+ * @since 1.0
+ */
 public class UUIDImplementor implements Implementor<UUID, String> {
 
     /**

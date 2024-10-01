@@ -31,6 +31,10 @@ import dev.efekos.simple_ql.data.SetterAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+/**
+ * One of builtin {@link PrimitiveImplementors} in SimpleQL.
+ * @since 1.0
+ */
 public class ByteTSImplementor implements Implementor<Byte, String> {
 
     /**
