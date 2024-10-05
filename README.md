@@ -26,8 +26,8 @@ import java.util.UUID;
 public class SimpleQLExample {
 
     public static void main(String[] args) throws Exception {
-        // Database connection. Database name is ignored since this is SQLite.
-        Database database = SimpleQL.createDatabase("jdbc:sqlite:my.db","simpleql");
+        // Database connection. Database name, username and password is ignored since this is SQLite.
+        Database database = SimpleQL.createDatabase("jdbc:sqlite:my.db","simpleql","admin","12345678");
         database.connect();
 
         // Getting tables.
@@ -41,11 +41,20 @@ public class SimpleQLExample {
             c.setMoney(new CustomerMoney(50,0));
             c.setGender(CustomerGender.FEMALE);
         });
-
+        
         // Getting data.
         Optional<Customer> row = customers.getRow(id);
 
-        // Data updating.
+        // Querying data.
+        QueryResult<Customer> result = customers.query(new QueryBuilder()
+                .filterWithCondition(Conditions.lessThan("age", 18))
+                .sortAscending("age")
+                .skip(5)
+                .limit(10)
+                .getQuery()
+        );
+        
+        // Updating data.
         customer.setName("John Boe");
         CustomerMoney money = customer.getMoney();
         money.setCents(10);
@@ -76,7 +85,7 @@ public class SimpleQLExample {
 </repository>
 ````
 
-2. Add this dependency. Replace the version with the latest version, which is ![](https://badgen.net/github/release/efekos/SimpleQL).
+2. Add this dependency. Replace the version with the latest version, which is ![](https://badgen.net/github/release/efekos/SimpleQL) (without `v`).
 ````xml
 <dependency>
     <groupId>dev.efekos</groupId>
@@ -92,7 +101,7 @@ public class SimpleQLExample {
 maven { url 'https://efekos.dev/maven' } 
 ````
 
-2. Add this dependency. Replace the version with the latest version. which is ![](https://badgen.net/github/release/efekos/SimpleQL).
+2. Add this dependency. Replace the version with the latest version. which is ![](https://badgen.net/github/release/efekos/SimpleQL) (without `v`).
 ````gradle
 implementation 'dev.efekos:SimpleQL:1.0.0' 
 ````
