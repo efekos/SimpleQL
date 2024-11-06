@@ -73,6 +73,9 @@ public class SimpleQLExample {
 
 ```
 
+> [!NOTE]
+> You can look at the full example [here](https://github.com/efekos/SimpleQL/tree/v1.0/src/test/java/dev/efekos/simple_ql).
+
 # Installation
 
 ## Maven
