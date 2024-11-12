@@ -63,7 +63,7 @@ public class Database {
     public void connect() throws SQLException {
         this.connection = DriverManager.getConnection(information.getConnectionUrl(), information.getUsername(), information.getPassword());
         if (information.getType().shouldCreateSchema()) {
-            connection.prepareStatement("CREATE SCHEMA " + information.getDatabaseName() + ";").executeUpdate();
+            connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS " + information.getDatabaseName() + ";").executeUpdate();
             connection.prepareStatement("USE " + information.getDatabaseName() + ";").executeUpdate();
         }
     }
