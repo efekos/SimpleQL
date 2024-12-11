@@ -31,7 +31,6 @@ import dev.efekos.simple_ql.annotation.Type;
 import dev.efekos.simple_ql.annotation.Unique;
 import dev.efekos.simple_ql.exception.NoGetterException;
 import dev.efekos.simple_ql.exception.NoSetterException;
-import dev.efekos.simple_ql.exception.TableException;
 import dev.efekos.simple_ql.implementor.Implementor;
 import dev.efekos.simple_ql.query.Query;
 import dev.efekos.simple_ql.query.QueryResult;
@@ -93,11 +92,13 @@ public class Table<T extends TableRow<T>> {
     private <C> Class<C> grabClass(Implementor<C, ?> implementor) {
         try {
             for (java.lang.reflect.Type type : implementor.getClass().getGenericInterfaces())
-                if (type instanceof ParameterizedType pt && pt.getRawType() == Implementor.class)
-                    return (Class<C>) Class.forName(pt.getActualTypeArguments()[0].getTypeName());
+                if (type instanceof ParameterizedType pt && pt.getRawType() == Implementor.class) {
+                    java.lang.reflect.Type t = pt.getActualTypeArguments()[0];
+                    return (Class<C>) Class.forName(t instanceof ParameterizedType ptt ? ptt.getRawType().getTypeName() : t.getTypeName());
+                }
             return null;
         } catch (Exception e) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(e.getMessage(),e);
         }
     }
 
@@ -147,6 +148,7 @@ public class Table<T extends TableRow<T>> {
      *
      * @param row {@link T} instance to clean.
      */
+    @SuppressWarnings("unchecked")
     void clean(T row) {
         if (!row.isDirty()) return;
 
@@ -156,7 +158,10 @@ public class Table<T extends TableRow<T>> {
             row.getPrimaryField().setAccessible(true);
             Optional<SetterAction<Object>> setter = findSetter(field.getType());
             new UpdateActionThread(database.getConnection(), "UPDATE " + name + " SET " + field.getName() + "=? WHERE " + primaryKey.getName() + "= ?;", stmt -> {
-                if (setter.isPresent()) setter.get().set(stmt, 1, field.get(row));
+                if (setter.isPresent()) {
+                    if(implementors.containsKey(field.getType())) setter.get().set(stmt, 1, ((Implementor<Object,Object>)implementors.get(field.getType())).write(field.get(row)));
+                    else setter.get().set(stmt, 1, field.get(row));
+                }
                 setField(row, row.getPrimaryField(), stmt, 2);
                 return stmt;
             }).start();
@@ -332,7 +337,7 @@ public class Table<T extends TableRow<T>> {
         if (c == byte.class || c == Byte.class)
             return Optional.of((stmt, index, value) -> stmt.setByte(index, (byte) value));
         if (c == long.class || c == Long.class)
-            return Optional.of((stmt, index, value) -> stmt.setByte(index, (byte) value));
+            return Optional.of((stmt, index, value) -> stmt.setLong(index, (long) value));
         if (TableRowTypeAdapter.class.isAssignableFrom(c)) return Optional.of((stmt, index, value) -> {
             TableRowTypeAdapter adapter = (TableRowTypeAdapter) value;
             stmt.setString(index, adapter.adapt());
