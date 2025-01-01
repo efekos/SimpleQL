@@ -1,7 +1,7 @@
 /*
- * The MIT License (MIT)
+ * MIT License
  *
- * Copyright (c) 2024 efekos
+ * Copyright (c) 2025 efekos
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,17 +10,16 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package dev.efekos.simple_ql.data;
@@ -336,6 +335,8 @@ public class Table<T extends TableRow<T>> {
             return Optional.of((stmt, index, value) -> stmt.setShort(index, (short) value));
         if (c == byte.class || c == Byte.class)
             return Optional.of((stmt, index, value) -> stmt.setByte(index, (byte) value));
+        if (c == boolean.class || c == Boolean.class)
+            return Optional.of((stmt, index, value) -> stmt.setBoolean(index, (boolean) value));
         if (c == long.class || c == Long.class)
             return Optional.of((stmt, index, value) -> stmt.setLong(index, (long) value));
         if (TableRowTypeAdapter.class.isAssignableFrom(c)) return Optional.of((stmt, index, value) -> {
@@ -362,6 +363,7 @@ public class Table<T extends TableRow<T>> {
             return Optional.of((s, columnName) -> (C) (Short) s.getShort(columnName));
         if (c == byte.class || c == Byte.class) return Optional.of((s, columnName) -> (C) (Byte) s.getByte(columnName));
         if (c == long.class || c == Long.class) return Optional.of((s, columnName) -> (C) (Long) s.getLong(columnName));
+        if (c == boolean.class || c == Boolean.class) return Optional.of((s, columnName) -> (C) (Boolean) s.getBoolean(columnName));
         if (TableRowTypeAdapter.class.isAssignableFrom(c)) return Optional.of((s, columnName) -> {
             try {
                 String string = s.getString(columnName);
